@@ -1,3 +1,25 @@
 <resources>
-    <string name="app_name">DevIntensive</string>
+    <string name="app_name">Сбродов Дмитрий</string>
+
+    <string name="phone_hint">Мобильный телефон</string>
+    <string name="phone_value">7 (932) 848 5791</string>
+
+    <string name="email_hint">Email</string>
+    <string name="email_value">DmiSb@inbox.ru</string>
+
+    <string name="vk_hint">Профиль в VK</string>
+    <string name="vk_value">vk.com/id91548254</string>
+
+    <string name="git_hint">Репозиторий</string>
+    <string name="git_value">https://github.com/DmiSb/DevIntensive</string>
+
+    <string name="self_hint">О себе</string>
+    <string name="self_value">Введите информацию о себе: Работа, хобби, семья, дети ... )))</string>
+
+    <string name="raiting_1_1">1</string>
+    <string name="raiting_1_2">Рейтинг</string>
+    <string name="raiting_2_1">1</string>
+    <string name="raiting_2_2">Написано строк кода</string>
+    <string name="raiting_3_1">1</string>
+    <string name="raiting_3_2">Проектов</string>
 </resources>
