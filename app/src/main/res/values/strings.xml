@@ -16,10 +16,13 @@
     <string name="self_hint">О себе</string>
     <string name="self_value">Введите информацию о себе: Работа, хобби, семья, дети ... )))</string>
 
-    <string name="raiting_1_1">1</string>
-    <string name="raiting_1_2">Рейтинг</string>
-    <string name="raiting_2_1">1</string>
-    <string name="raiting_2_2">Написано строк кода</string>
-    <string name="raiting_3_1">1</string>
-    <string name="raiting_3_2">Проектов</string>
+    <string name="rating_item_1.value">1</string>
+    <string name="rating_item_1.text">Рейтинг</string>
+    <string name="rating_item_2.value">1</string>
+    <string name="rating_item_2.text">Написано строк кода</string>
+    <string name="rating_item_3.value">1</string>
+    <string name="rating_item_3.text">Проектов</string>
+
+    <string name="drawer_profile_menu">Мой профиль</string>
+    <string name="drower_team_menu">Команда</string>
 </resources>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item android:id="@+id/user_profile_menu"
+            android:checkable="true"
+            android:icon="@drawable/ic_account_circle_black_24dp"
+            android:title="@string/drawer_profile_menu"/>
+
+        <item android:id="@+id/team_menu"
+              android:icon="@drawable/ic_people_black_24dp"
+              android:title="@string/drower_team_menu"/>
+    </group>
+</menu>
