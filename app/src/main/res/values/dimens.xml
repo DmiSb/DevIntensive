@@ -9,6 +9,7 @@
     <dimen name="size_medium_56">56dp</dimen>
     <dimen name="size_medium_60">60dp</dimen>
     <dimen name="size_large_72">72dp</dimen>
+    <dimen name="size_huge_112">112dp</dimen>
     <dimen name="profile_image_size">256dp</dimen>
 
     <!-- Spaces -->

@@ -1,8 +1,10 @@
 package com.softdesign.devintensive.ui.aktivities;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -12,7 +14,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.MenuItem;
@@ -43,7 +44,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private Toolbar mToolbar;
     private DrawerLayout mNavigationDrawer;
     private FloatingActionButton mFab;
+    private AppBarLayout mAppBar;
+
     private EditText mUserPhone, mUserMail, mUserVK, mUserGit, mUserSelf;
+
+
 
     private List<EditText> mUserInfoViews;
 
@@ -103,14 +108,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         List<String> userData = mDataManager.getPreferencesManager().loadUserProfileData();
 
         /*
-        Отлавливаем событие Behavior, когда скрывается кнопка,
-        и убираем отсутпы сверху у серой плашки рейтинга
+        Отлавливаем событие Behavior и убираем отсутпы сверху у серой плашки рейтинга
         */
         ViewBehavior vBehavior = new ViewBehavior();
         // Делаем пересчет в пиксели
-        int iPad = getResources().getDimensionPixelSize(R.dimen.spacing_half_large_28);
-        // Передаем идентификатор плашки и сдвиг
-        vBehavior.setHeader((LinearLayout) findViewById(R.id.header_bar), iPad);
+        float iPad = (float) getResources().getDimensionPixelSize(R.dimen.spacing_half_large_28);
+        // Передаем идентификатор плашки и начальный паддинг
+        vBehavior.setRatingBar((LinearLayout) findViewById(R.id.rating_bar), iPad);
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) mFab.getLayoutParams();
         params.setBehavior(vBehavior);
 
@@ -200,6 +204,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
+    /**
+     * Получение и обработка результата из другой Activity (фото из камеры или галереи)
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //super.onActivityResult(requestCode, resultCode, data);
+
+    }
+
     private void runWithDalay() {
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -259,5 +275,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             userData.add(mUserInfoViews.get(i).getText().toString());
         }
         mDataManager.getPreferencesManager().saveUserProfileData(userData);
+    }
+
+    /**
+     * Загрузка фото из галереи
+     */
+    private void loadPhotoFromGallery() {
+
+    }
+
+    /**
+     * Загрузка фото из камеры
+     */
+    private void loadPhotoFromCamera() {
+
     }
 }
