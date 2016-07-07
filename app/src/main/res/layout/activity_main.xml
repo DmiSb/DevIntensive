@@ -30,15 +30,44 @@
 
                 <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/profile_image_size">
+                    android:layout_height="@dimen/size_profile_image_256"
+                    android:fitsSystemWindows="true">
 
                     <ImageView
                         android:id="@+id/user_photo_img"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/profile_image_size"
+                        android:layout_height="@dimen/size_profile_image_256"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/user_photo"
-                        android:fitsSystemWindows="true"/>
+                        android:src="@drawable/user_photo"/>
+
+                    <RelativeLayout
+                        android:id="@+id/profile_placeholder"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/gray_background"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:id="@+id/photo_placeholder"
+                            android:layout_width="@dimen/size_placeholder_photo_90"
+                            android:layout_height="@dimen/size_placeholder_photo_90"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/add_a_photo_48"
+                            android:layout_centerHorizontal="true"
+                            android:layout_alignParentBottom="true"
+                            android:layout_marginBottom="@dimen/spacing_large_56"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/user_profile_placeholder_image"
+                            android:textColor="@color/white"
+                            android:fontFamily="sans-serif-medium"
+                            android:layout_centerHorizontal="true"
+                            android:layout_above="@id/photo_placeholder"
+                            android:layout_marginBottom="@dimen/spacing_small_8"/>
+
+                    </RelativeLayout>
 
                 </FrameLayout>
 

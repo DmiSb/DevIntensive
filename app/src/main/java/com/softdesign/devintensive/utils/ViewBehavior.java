@@ -30,9 +30,11 @@ public class ViewBehavior extends FloatingActionButton.Behavior {
     @Override
     public boolean onDependentViewChanged(CoordinatorLayout parent, FloatingActionButton child, View dependency) {
         if (mRatingBar != null) {
-            Log.d(TAG, Integer.toString(dependency.getHeight()) + ", " + Integer.toString(dependency.getBottom()));
             int padding = getPadding((float) dependency.getHeight(), (float) dependency.getBottom());
-            mRatingBar.setPadding(0, padding, 0, padding);
+            Log.d(TAG, Integer.toString(dependency.getHeight()) + ", " + Integer.toString(dependency.getBottom())+ ", " + Integer.toString(padding));
+            if (padding >= 0) {
+                mRatingBar.setPadding(0, padding, 0, padding);
+            }
         }
 
         return super.onDependentViewChanged(parent, child, dependency);

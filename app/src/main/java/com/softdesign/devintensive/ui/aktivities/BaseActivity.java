@@ -15,6 +15,8 @@ public class BaseActivity extends AppCompatActivity {
     protected ProgressDialog mProgressDialog;
 
     public void showProgress() {
+        Log.d(TAG, "showProgress");
+
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(this, R.style.custom_dialog);
             mProgressDialog.setCancelable(false);
@@ -25,6 +27,8 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void hideProgress() {
+        Log.d(TAG, "hideProgress");
+
         if (mProgressDialog != null) {
             if (mProgressDialog.isShowing()) {
                 mProgressDialog.hide();
@@ -33,11 +37,14 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void showError(String message, Exception error) {
+        Log.e(TAG, "showError: " + String.valueOf(error));
+
         showToast(message);
-        Log.e(TAG, String.valueOf(error));
     }
 
     public void showToast(String message) {
+        Log.d(TAG, "showToast: " + message);
+
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 }
