@@ -5,6 +5,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+/**
+ * Вспомогательный класс для сохранения данных
+ */
 public class DevIntensiveApp extends Application {
     public static SharedPreferences sSharedPreferences;
     private static Context mContext;

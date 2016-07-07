@@ -9,8 +9,17 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
+/**
+ * Класс для скругления изображения
+ */
 public class RoundedDrawable {
 
+    /**
+     * Скругление изображения
+     *
+     * @param bitmap
+     * @return
+     */
     public static Bitmap getRoundedBitmap(Bitmap bitmap) {
         final Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
         final Canvas canvas = new Canvas(output);

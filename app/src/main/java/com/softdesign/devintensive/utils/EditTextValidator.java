@@ -15,11 +15,17 @@ import com.softdesign.devintensive.R;
 public class EditTextValidator implements TextWatcher {
 
     private static final String TAG = ConstantManager.TAG_PREFIX + "EditTextValidator";
+    // Контекст
     private Context mContext;
+    // Редактируемый элемент
     private EditText mEdit;
+    // Его корневой элемент
     private TextInputLayout mEditLayout;
+    // Тип элемента, константа
     private String mEditType;
+    // Позиция курсора
     private int mPosStart, mPosEnd;
+    // Признак что курсор в конце текста
     private Boolean mEndPosition = false;
 
     /**

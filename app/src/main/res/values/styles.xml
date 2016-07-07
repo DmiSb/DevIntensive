@@ -38,7 +38,6 @@
     <style name="item_bar">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <!-- <item name="android:layout_height">@dimen/size_large_72</item> -->
         <item name="android:orientation">horizontal</item>
     </style>
 
