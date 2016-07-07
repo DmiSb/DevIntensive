@@ -42,6 +42,7 @@ import com.softdesign.devintensive.data.managers.DataManager;
 import com.softdesign.devintensive.utils.ConstantManager;
 import com.softdesign.devintensive.utils.EditTextValidator;
 import com.softdesign.devintensive.utils.RoundedDrawable;
+import com.softdesign.devintensive.utils.TransformAndCropImage;
 import com.softdesign.devintensive.utils.ViewBehavior;
 import com.squareup.picasso.Picasso;
 
@@ -130,7 +131,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     /**
      * Создание Activity
      *
-     * @param savedInstanceState
+     * @param savedInstanceState - Bind для сохранения состояния
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -243,7 +244,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     /**
      * Глобальный обработчик нажатия
      *
-     * @param v
+     * @param v - источник события
      */
     @Override
     public void onClick(View v) {
@@ -286,9 +287,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     /**
      * Получение и обработка результата из другой Activity (фото из камеры или галереи)
      *
-     * @param requestCode
-     * @param resultCode
-     * @param data
+     * @param requestCode - код запроса
+     * @param resultCode - код ответа
+     * @param data - данные
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -313,9 +314,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     /**
      * Результат запроса разрешений
      *
-     * @param requestCode
-     * @param permissions
-     * @param grantResults
+     * @param requestCode - код запроса
+     * @param permissions - код разрешения
+     * @param grantResults - резутьтат
      */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -359,7 +360,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     /**
      * Показ сообщения в нижней части
-     * @param message
+     * @param message - текст сообщения
      */
     private void showSnackBar(String message) {
         Log.d(TAG, "showSnackBar");
@@ -402,7 +403,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     /**
      * Изменение режима - редактирование/сохранение
      *
-     * @param mode
+     * @param mode - режим (1 - редактирование)
      */
     private void changeEditMode(int mode) {
         Log.d(TAG, "changeEditMode");
@@ -505,7 +506,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     /**
      * Получение каталога для сохранения фотографии
      *
-      * @return
+      * @return - каталог
      */
     private File getExternalStoragePictureDirectory() {
         Log.d(TAG, "getExternalStoragePictureDirectory");
@@ -622,8 +623,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private void insertProfileImage(Uri selectedImage) {
         Log.d(TAG, "insertProfileImage");
 
-        Picasso.with(this).load(selectedImage).into(mUserImage);
+        Picasso.with(this).load(selectedImage).transform(new TransformAndCropImage()).into(mUserImage);
         mDataManager.getPreferencesManager().saveUserPhoto(selectedImage);
+        hideProfilePlaceholder();
     }
 
     /**
@@ -666,8 +668,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     /**
      * Диалог выбора получения фото
      *
-     * @param id
-     * @return
+     * @param - код запроса
+     * @return - созданный диалог
      */
     @Override
     protected Dialog onCreateDialog(int id) {
