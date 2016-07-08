@@ -54,6 +54,7 @@ import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.BindViews;
 import butterknife.ButterKnife;
 
 /**
@@ -82,34 +83,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @BindView(R.id.profile_placeholder) RelativeLayout mProfilePlaceholder;
     @BindView(R.id.user_photo_img) ImageView mUserImage;
 
-    @BindView(R.id.call_img) ImageView mCallImg;
-    @BindView(R.id.mail_send_img) ImageView mMailSendImg;
-    @BindView(R.id.vk_open_img) ImageView mVkOpenImg;
-    @BindView(R.id.git_open_img) ImageView mGitOpenImg;
-
-    @BindView(R.id.phone_et) EditText mUserPhone;
-    @BindView(R.id.email_et) EditText mUserMail;
-    @BindView(R.id.vk_et) EditText mUserVK;
-    @BindView(R.id.git_et) EditText mUserGit;
-    @BindView(R.id.self_et) EditText mUserSelf;
-
-    @BindView(R.id.phone_layout) TextInputLayout mUserPhoneLayoyt;
-    @BindView(R.id.email_layout) TextInputLayout mUserMailLayoyt;
-    @BindView(R.id.vk_layout) TextInputLayout mUserVKLayoyt;
-    @BindView(R.id.git_layout) TextInputLayout mUserGitLayoyt;
+    @BindViews({R.id.call_img, R.id.mail_send_img, R.id.vk_open_img, R.id.git_open_img}) List<ImageView> mUserInfoImgs;
+    @BindViews({R.id.phone_et, R.id.email_et, R.id.vk_et, R.id.git_et, R.id.self_et}) List<EditText> mUserInfoViews;
+    @BindViews({R.id.phone_layout, R.id.email_layout, R.id.vk_layout, R.id.git_layout}) List<TextInputLayout> mUserInfoLayouts;
 
     private ImageView mAvatar;
     private AppBarLayout.LayoutParams mAppBarParams = null;
 
-    /**
-     * Переменные для валидации вводимых значений
-     */
-    private EditTextValidator mUserPhoneValidator = null;
-    private EditTextValidator mUserMailValidator = null;
-    private EditTextValidator mUserVKValidator = null;
-    private EditTextValidator mUserGitValidator = null;
-
-    private List<EditText> mUserInfoViews;
+    List<EditTextValidator> mUserInfoValidator;
 
     File mPhotoFile = null;
     Uri mSelectedImage = null;
@@ -143,20 +124,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
         mDataManager = DataManager.getInstance();
 
-        mUserInfoViews = new ArrayList<>();
-        mUserInfoViews.add(mUserPhone);
-        mUserInfoViews.add(mUserMail);
-        mUserInfoViews.add(mUserVK);
-        mUserInfoViews.add(mUserGit);
-        mUserInfoViews.add(mUserSelf);
-
         mFab.setOnClickListener(this);
         mProfilePlaceholder.setOnClickListener(this);
 
-        mCallImg.setOnClickListener(this);
-        mMailSendImg.setOnClickListener(this);
-        mVkOpenImg.setOnClickListener(this);
-        mGitOpenImg.setOnClickListener(this);
+        mUserInfoImgs.get(ConstantManager.USER_PHONE_ID).setOnClickListener(this);
+        mUserInfoImgs.get(ConstantManager.USER_EMAIL_ID).setOnClickListener(this);
+        mUserInfoImgs.get(ConstantManager.USER_VK_ID).setOnClickListener(this);
+        mUserInfoImgs.get(ConstantManager.USER_GIT_ID).setOnClickListener(this);
 
         setupToolBar();
         setupDrawer();
@@ -174,6 +148,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 .into(mUserImage);
 
         List<String> userData = mDataManager.getPreferencesManager().loadUserProfileData();
+        mUserInfoValidator = new ArrayList<EditTextValidator>(4);
 
         // Делаем пересчет начального паддинга в пиксели
         float iPad = (float) getResources().getDimensionPixelSize(R.dimen.spacing_half_large_28);
@@ -263,7 +238,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 callUserPhone();
                 break;
             case R.id.mail_send_img:
-                Intent mailIntent = new Intent(Intent.ACTION_SEND, Uri.fromParts("mailto:", mUserMail.getText().toString(), null));
+                Intent mailIntent = new Intent(Intent.ACTION_SEND,
+                        Uri.fromParts("mailto:", mUserInfoViews.get(ConstantManager.USER_EMAIL_ID).getText().toString(), null));
                 mailIntent.setType("text/plain");
                 mailIntent.putExtra(Intent.EXTRA_SUBJECT, R.string.app_title);
                 mailIntent.putExtra(Intent.EXTRA_TEXT, R.string.app_title);
@@ -274,11 +250,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 }
                 break;
             case R.id.vk_open_img:
-                Intent vkIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://" + mUserVK.getText().toString()));
+                String urlVK = "https://" + mUserInfoViews.get(ConstantManager.USER_VK_ID).getText().toString();
+                Intent vkIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(urlVK));
                 startActivity(vkIntent);
                 break;
             case R.id.git_open_img:
-                Intent gitIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://" + mUserGit.getText().toString()));
+                String urlGit = "https://" + mUserInfoViews.get(ConstantManager.USER_GIT_ID).getText().toString();
+                Intent gitIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(urlGit));
                 startActivity(gitIntent);
                 break;
         }
@@ -401,6 +379,31 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     /**
+     * Установка валидатора для элементов EditText
+     */
+    private void setUserInfoValidator() {
+
+        for (int i = 0; i < mUserInfoLayouts.size(); i++) {
+
+            if (mUserInfoValidator.size() <= i || mUserInfoValidator.get(i) == null) {
+                mUserInfoValidator.add(new EditTextValidator(this,
+                        mUserInfoViews.get(i), mUserInfoLayouts.get(i), i));
+            }
+
+            mUserInfoViews.get(i).addTextChangedListener(mUserInfoValidator.get(i));
+        }
+    }
+
+    /**
+     * Отключение валидатора от элементов EditText
+     */
+    private void removeUserInfoValidator() {
+        for (int i = 0; i < mUserInfoLayouts.size(); i++) {
+            mUserInfoViews.get(i).removeTextChangedListener(mUserInfoValidator.get(i));
+        }
+    }
+
+    /**
      * Изменение режима - редактирование/сохранение
      *
      * @param mode - режим (1 - редактирование)
@@ -423,26 +426,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             lockToolbar();
             mCollapsingToolbar.setExpandedTitleColor(Color.TRANSPARENT);
 
-            if (mUserPhoneValidator == null)
-                mUserPhoneValidator = new EditTextValidator(this, mUserPhone, mUserPhoneLayoyt, ConstantManager.USER_PHONE_KEY);
-            mUserPhone.addTextChangedListener(mUserPhoneValidator);
-
-            if (mUserMailValidator == null)
-                mUserMailValidator = new EditTextValidator(this, mUserMail, mUserMailLayoyt, ConstantManager.USER_EMAIL_KEY);
-            mUserMail.addTextChangedListener(mUserMailValidator);
-
-            if (mUserVKValidator == null)
-                mUserVKValidator = new EditTextValidator(this, mUserVK, mUserVKLayoyt, ConstantManager.USER_VK_KEY);
-            mUserVK.addTextChangedListener(mUserVKValidator);
-
-            if (mUserGitValidator == null)
-                mUserGitValidator = new EditTextValidator(this, mUserGit, mUserGitLayoyt, ConstantManager.USER_GIT_KEY);
-            mUserGit.addTextChangedListener(mUserGitValidator);
+            // Устанавливаем валидаторы
+            setUserInfoValidator();
 
             // Устанавливаем фокус на поле редактирования телефона
-            mUserPhone.requestFocus();
+            mUserInfoViews.get(ConstantManager.USER_PHONE_ID).requestFocus();
             // Перемещаем курсор в конец строки
-            mUserPhone.setSelection(mUserPhone.getText().length());
+            mUserInfoViews.get(ConstantManager.USER_PHONE_ID).setSelection(mUserInfoViews.get(ConstantManager.USER_PHONE_ID).getText().length());
         } else {
             mFab.setImageResource(R.drawable.ic_create_black_24dp);
             for (EditText userValue : mUserInfoViews) {
@@ -452,10 +442,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             }
             hideProfilePlaceholder();
 
-            mUserPhone.removeTextChangedListener(mUserPhoneValidator);
-            mUserMail.removeTextChangedListener(mUserMailValidator);
-            mUserVK.removeTextChangedListener(mUserVKValidator);
-            mUserGit.removeTextChangedListener(mUserGitValidator);
+            // Убираем валидаторы
+            removeUserInfoValidator();
 
             // Возвращаем "серую плашку"
             mRatingBar.setVisibility(View.VISIBLE);
@@ -725,7 +713,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         Log.d(TAG, "callUserPhone");
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
-            Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + mUserPhone.getText().toString()));
+            Intent callIntent = new Intent(Intent.ACTION_CALL,
+                    Uri.parse("tel:" + mUserInfoViews.get(ConstantManager.USER_PHONE_ID).getText().toString()));
+                    //Uri.parse("tel:" + mUserPhone.getText().toString()));
             startActivity(callIntent);
         } else {
             ActivityCompat.requestPermissions(this,

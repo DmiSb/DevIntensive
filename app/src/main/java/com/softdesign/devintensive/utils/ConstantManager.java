@@ -11,7 +11,12 @@ public interface ConstantManager {
     String USER_GIT_KEY     = "USER_GIT_KEY";
     String USER_VK_KEY      = "USER_VK_KEY";
     String USER_SELF_KEY    = "USER_SELF_KEY";
-    String USER_PHOTO_KEY = "USER_PHOTO_KEY";
+    String USER_PHOTO_KEY   = "USER_PHOTO_KEY";
+
+    int USER_PHONE_ID = 0;
+    int USER_EMAIL_ID = 1;
+    int USER_VK_ID    = 2;
+    int USER_GIT_ID   = 3;
 
     int LOAD_PROFILE_PHOTO  = 1;
     int REQUEST_CAMERA_PICTURE = 100;

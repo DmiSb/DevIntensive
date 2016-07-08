@@ -12,7 +12,7 @@
     <string name="vk_value">vk.com/id91548254</string>
 
     <string name="git_hint">Репозиторий</string>
-    <string name="git_value">https://github.com/DmiSb/DevIntensive</string>
+    <string name="git_value">github.com/DmiSb/DevIntensive</string>
 
     <string name="self_hint">О себе</string>
     <string name="self_value">Введите информацию о себе: Работа, хобби, семья, дети ... )))</string>

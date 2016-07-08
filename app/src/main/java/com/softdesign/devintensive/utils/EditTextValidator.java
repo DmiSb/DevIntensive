@@ -22,7 +22,7 @@ public class EditTextValidator implements TextWatcher {
     // Его корневой элемент
     private TextInputLayout mEditLayout;
     // Тип элемента, константа
-    private String mEditType;
+    private int mEditID;
     // Позиция курсора до и после изменения
     private int mPosBefore, mPosAfter;
     // Значение до изменения
@@ -36,16 +36,16 @@ public class EditTextValidator implements TextWatcher {
      * @param context - контекст главной формы
      * @param validateEdit - проверяемый EditText
      * @param textInputLayout - TextInputLayout, на котором лежит EditText
-     * @param editType - константа типа EditText
+     * @param editID - идентификатор EditText
      */
-    public EditTextValidator(Context context, EditText validateEdit, TextInputLayout textInputLayout, String editType){
+    public EditTextValidator(Context context, EditText validateEdit, TextInputLayout textInputLayout, int editID){
         super();
         Log.d(TAG, "Constructor");
 
         mContext = context;
         mEdit = validateEdit;
         mEditLayout = textInputLayout;
-        mEditType = editType;
+        mEditID = editID;
     }
 
     @Override
@@ -76,17 +76,17 @@ public class EditTextValidator implements TextWatcher {
             endPosition = true;
         }
 
-        switch (mEditType) {
-            case ConstantManager.USER_PHONE_KEY:
+        switch (mEditID) {
+            case ConstantManager.USER_PHONE_ID:
                 mEdit.setText(validatePhone(s.toString(), endPosition));
                 break;
-            case ConstantManager.USER_EMAIL_KEY:
+            case ConstantManager.USER_EMAIL_ID:
                 validateEmail(s.toString());
                 break;
-            case ConstantManager.USER_VK_KEY:
+            case ConstantManager.USER_VK_ID:
                 mEdit.setText(validateLink(s.toString(), ConstantManager.VK_SYMBOL));
                 break;
-            case ConstantManager.USER_GIT_KEY:
+            case ConstantManager.USER_GIT_ID:
                 mEdit.setText(validateLink(s.toString(), ConstantManager.GIT_SYMBOL));
         }
 
