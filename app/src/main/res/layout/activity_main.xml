@@ -37,8 +37,8 @@
                         android:id="@+id/user_photo_img"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/size_profile_image_256"
-                        android:scaleType="centerCrop"/>
-                        <!-- android:src="@drawable/user_photo"/> -->
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/user_photo"/>
 
                     <RelativeLayout
                         android:id="@+id/profile_placeholder"

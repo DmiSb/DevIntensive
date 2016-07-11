@@ -3,7 +3,6 @@ package com.softdesign.devintensive.ui.aktivities;
 import android.Manifest;
 import android.app.Dialog;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -37,7 +36,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.data.managers.DataManager;
@@ -88,8 +86,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @BindViews({R.id.call_img, R.id.mail_send_img, R.id.vk_open_img, R.id.git_open_img}) List<ImageView> mUserInfoImgs;
     @BindViews({R.id.phone_et, R.id.email_et, R.id.vk_et, R.id.git_et, R.id.self_et}) List<EditText> mUserInfoViews;
     @BindViews({R.id.phone_layout, R.id.email_layout, R.id.vk_layout, R.id.git_layout}) List<TextInputLayout> mUserInfoLayouts;
-
-    @BindViews({R.id.rating_value, R.id.rating_code_line, R.id.rating_project}) List<TextView> mUserRatings;
 
     private ImageView mAvatar;
     private AppBarLayout.LayoutParams mAppBarParams = null;
@@ -145,9 +141,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     BitmapFactory.decodeResource(getResources(), R.drawable.avatar)));
         }
 
-        initUserFields();
-        initUserRatings();
-        initUserPhotoWhithProgress();
+        loadUserInfoValue();
+        Picasso.with(this)
+                .load(mDataManager.getPreferencesManager().loadUserPhoto())
+                .placeholder(R.drawable.user_photo)
+                .into(mUserImage);
 
         List<String> userData = mDataManager.getPreferencesManager().loadUserProfileData();
         mUserInfoValidator = new ArrayList<EditTextValidator>(4);
@@ -181,13 +179,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d(TAG, "onStart : " + new Date().toString());
+        Log.d(TAG, "onStart");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume : " + new Date().toString());
+        Log.d(TAG, "onResume");
     }
 
     @Override
@@ -195,7 +193,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         super.onPause();
         Log.d(TAG, "onPause");
 
-        initUserFields();
+        loadUserInfoValue();
     }
 
     @Override
@@ -235,6 +233,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 showDialog(ConstantManager.LOAD_PROFILE_PHOTO);
                 break;
             case R.id.call_img:
+                //showProgress();
+                //runWithDalay();
                 callUserPhone();
                 break;
             case R.id.mail_send_img:
@@ -362,30 +362,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }, 3000);
     }
 
-    private void setUserPhotoIntoView() {
-        Log.d(TAG, "start loading user photo - " + new Date().toString());
-
-        Picasso.with(this)
-                .load(mDataManager.getPreferencesManager().loadUserPhoto())
-                .into(mUserImage);
-
-        Log.d(TAG, "end loading user photo - " + new Date().toString());
-    }
-
-    private void initUserPhotoWhithProgress() {
-        Log.d(TAG, "initUserPhotoWhithProgress");
-
-        showProgress();
-        final Handler handler = new Handler();
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                setUserPhotoIntoView();
-                hideProgress();
-            }
-        });
-    }
-
     /**
      * Настройка toolbar
      */
@@ -474,7 +450,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             // Разблокируем тулбар
             unlockToolbar();
             mCollapsingToolbar.setExpandedTitleColor(getResources().getColor(R.color.white));
-            saveUserFields();
+            saveUserInfoValue();
         }
         mCurrentEditMode = mode;
     }
@@ -482,8 +458,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     /*
      * Загрузка профиля пользователя из Preferences
      */
-    private void initUserFields() {
-        Log.d(TAG, "initUserFields");
+    private void loadUserInfoValue() {
+        Log.d(TAG, "loadUserInfoValue");
 
         List<String> userData = mDataManager.getPreferencesManager().loadUserProfileData();
         for (int i = 0; i < userData.size(); i++){
@@ -494,21 +470,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     /**
      * Сохранение профиля пользователя в Preferences
       */
-    private void saveUserFields() {
-        Log.d(TAG, "saveUserFields");
+    private void saveUserInfoValue() {
+        Log.d(TAG, "saveUserInfoValue");
 
         List<String> userData = new ArrayList<>();
         for (int i = 0; i < mUserInfoViews.size(); i++) {
             userData.add(mUserInfoViews.get(i).getText().toString());
         }
         mDataManager.getPreferencesManager().saveUserProfileData(userData);
-    }
-
-    private void initUserRatings() {
-        List<String> userData = mDataManager.getPreferencesManager().loadUserRatingValues();
-        for (int i = 0; i < userData.size(); i++) {
-            mUserRatings.get(i).setText(userData.get(i));
-        }
     }
 
     /**

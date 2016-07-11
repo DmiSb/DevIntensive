@@ -37,7 +37,7 @@
     <string name="message_permission">Разрешить</string>
     <string name="login_title">ВОЙТИ</string>
     <string name="login_password">Пароль</string>
-    <string name="login_remember">Забыли пароль?</string>
+    <string name="login_fogott_password">Забыли пароль?</string>
 
     <string name="mail_send_action">Отправка письма...</string>
     <string name="mail_error_action">"Ошибка отправки письма: "</string>
