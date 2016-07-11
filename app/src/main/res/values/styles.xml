@@ -12,7 +12,7 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionBar">false</item>
     </style>
-    
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"></style>
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"></style>
@@ -38,24 +38,22 @@
     <style name="item_bar">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">@dimen/spacing_small_8</item>
-        <item name="android:layout_marginBottom">@dimen/spacing_small_8</item>
         <item name="android:orientation">horizontal</item>
     </style>
 
     <style name="item_bar_detail">
         <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">@dimen/size_large_72</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">1</item>
         <item name="android:orientation">vertical</item>
         <item name="android:layout_marginLeft">@dimen/spacing_medium_32</item>
-        <item name="android:layout_marginRight">@dimen/spacing_normal_16</item>
+        <item name="android:layout_marginTop">@dimen/spacing_small_8</item>
         <item name="android:gravity">center_vertical</item>
     </style>
 
     <style name="text_input_layout">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
     </style>
 
     <style name="text">
@@ -67,7 +65,7 @@
 
     <style name="horizontal_divider">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/line_size_2</item>
+        <item name="android:layout_height">@dimen/size_line_2</item>
         <item name="android:background">@color/grey_light</item>
         <item name="android:layout_marginLeft">@dimen/size_large_72</item>
     </style>
@@ -80,6 +78,7 @@
         <item name="android:textColorHint">@color/grey</item>
         <item name="android:focusable">false</item>
         <item name="android:fontFamily">sans-serif-condensed</item>
+        <item name="android:layout_marginRight">@dimen/spacing_normal_16</item>
     </style>
 
     <!-- Rating bar Styles -->
@@ -114,7 +113,7 @@
     </style>
 
     <style name="vertical_divider">
-        <item name="android:layout_width">@dimen/line_size_2</item>
+        <item name="android:layout_width">@dimen/size_line_2</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:background">@color/grey_light</item>
     </style>
@@ -129,6 +128,22 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">14sp</item>
+    </style>
+    
+    <!-- Login activity -->
+    <style name="login_bar">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="login_bar_edit">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/size_duble_small_48</item>
+    </style>
+
+    <style name="AppTheme.Button.Red" parent="Base.Widget.AppCompat.Button">
+        <item name="colorButtonNormal">@color/color_accent</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
 </resources>

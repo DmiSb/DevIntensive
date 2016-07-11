@@ -4,13 +4,17 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <!-- Sizes -->
-    <dimen name="line_size_2">2dp</dimen>
+    <dimen name="size_line_2">2dp</dimen>
+    <dimen name="size_line_4">4dp</dimen>
     <dimen name="size_small_24">24dp</dimen>
+    <dimen name="size_duble_small_48">48dp</dimen>
     <dimen name="size_medium_56">56dp</dimen>
     <dimen name="size_medium_60">60dp</dimen>
     <dimen name="size_large_72">72dp</dimen>
+    <dimen name="size_edit_layout_80">80dp</dimen>
+    <dimen name="size_placeholder_photo_90">90dp</dimen>
     <dimen name="size_huge_112">112dp</dimen>
-    <dimen name="profile_image_size">256dp</dimen>
+    <dimen name="size_profile_image_256">256dp</dimen>
 
     <!-- Spaces -->
     <dimen name="spacing_small_8">8dp</dimen>
@@ -29,6 +33,5 @@
     <dimen name="font_normal_14">14sp</dimen>
     <dimen name="font_size_normal_16">16dp</dimen>
     <dimen name="font_larger_24">24sp</dimen>
-
 
 </resources>

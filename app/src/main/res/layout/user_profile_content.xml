@@ -16,6 +16,7 @@
             android:layout_weight="0.25">
 
             <TextView
+                android:id="@+id/rating_value"
                 style="@style/rating_bar_text.value"
                 android:text="@string/rating_item_1.value"/>
 
@@ -33,6 +34,7 @@
             android:layout_weight="0.5">
 
             <TextView
+                android:id="@+id/rating_code_line"
                 style="@style/rating_bar_text.value"
                 android:text="@string/rating_item_2.value"/>
 
@@ -50,6 +52,7 @@
             android:layout_weight="0.25">
 
             <TextView
+                android:id="@+id/rating_project"
                 style="@style/rating_bar_text.value"
                 android:text="@string/rating_item_3.value"/>
 
