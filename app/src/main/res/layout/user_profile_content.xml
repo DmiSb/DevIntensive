@@ -17,11 +17,11 @@
 
             <TextView
                 style="@style/rating_bar_text.value"
-                android:text="@string/rating_item_1.value"/>
+                android:text="@string/rating_item_1_value"/>
 
             <TextView
                 style="@style/rating_bar_text"
-                android:text="@string/rating_item_1.text"/>
+                android:text="@string/rating_item_1_text"/>
 
         </LinearLayout>
 
@@ -34,11 +34,11 @@
 
             <TextView
                 style="@style/rating_bar_text.value"
-                android:text="@string/rating_item_2.value"/>
+                android:text="@string/rating_item_2_value"/>
 
             <TextView
                 style="@style/rating_bar_text"
-                android:text="@string/rating_item_2.text"/>
+                android:text="@string/rating_item_2_text"/>
 
         </LinearLayout>
 
@@ -51,11 +51,11 @@
 
             <TextView
                 style="@style/rating_bar_text.value"
-                android:text="@string/rating_item_3.value"/>
+                android:text="@string/rating_item_3_value"/>
 
             <TextView
                 style="@style/rating_bar_text"
-                android:text="@string/rating_item_3.text"/>
+                android:text="@string/rating_item_3_text"/>
 
         </LinearLayout>
 
@@ -81,7 +81,8 @@
 
                 <!-- Мобильный телефон -->
                 <LinearLayout
-                    style="@style/item_bar">
+                    style="@style/item_bar"
+                    android:minHeight="@dimen/size_large_72">
 
                     <ImageView
                         style="@style/icon.left"
@@ -91,6 +92,7 @@
                         style="@style/item_bar_detail">
 
                         <android.support.design.widget.TextInputLayout
+                            android:id="@+id/phone_layout"
                             style="@style/text_input_layout">
 
                             <EditText
@@ -116,7 +118,8 @@
                 <!-- EMail -->
 
                 <LinearLayout
-                    style="@style/item_bar">
+                    style="@style/item_bar"
+                    android:minHeight="@dimen/size_large_72">
 
                     <ImageView
                         style="@style/icon.left"
@@ -126,6 +129,7 @@
                         style="@style/item_bar_detail">
 
                         <android.support.design.widget.TextInputLayout
+                            android:id="@+id/email_layout"
                             style="@style/text_input_layout">
 
                             <EditText
@@ -133,12 +137,14 @@
                                 android:hint="@string/email_hint"
                                 android:inputType="textEmailAddress"
                                 android:text="@string/email_value"
-                                style="@style/edit_text"/>
+                                style="@style/edit_text"
+                                android:singleLine="true"/>
 
                         </android.support.design.widget.TextInputLayout>
                     </LinearLayout>
 
                     <ImageView
+                        android:id="@+id/mail_send_img"
                         style="@style/icon.right"
                         android:src="@drawable/ic_send_black_24dp"/>
 
@@ -150,7 +156,8 @@
 
                 <!-- VK -->
                 <LinearLayout
-                    style="@style/item_bar">
+                    style="@style/item_bar"
+                    android:minHeight="@dimen/size_large_72">
 
                     <ImageView
                         style="@style/icon.left"
@@ -160,6 +167,7 @@
                         style="@style/item_bar_detail">
 
                         <android.support.design.widget.TextInputLayout
+                            android:id="@+id/vk_layout"
                             style="@style/text_input_layout">
 
                             <EditText
@@ -172,6 +180,7 @@
                     </LinearLayout>
 
                     <ImageView
+                        android:id="@+id/vk_open_img"
                         style="@style/icon.right"
                         android:src="@drawable/ic_visibility_black_24dp"/>
 
@@ -182,7 +191,9 @@
 
                 <!-- Репозиторий -->
                 <LinearLayout
-                    style="@style/item_bar">
+                    style="@style/item_bar"
+                    android:minHeight="@dimen/size_large_72">
+
                     <ImageView
                         style="@style/icon.left"
                         android:src="@drawable/github_circle_24"/>
@@ -191,6 +202,7 @@
                         style="@style/item_bar_detail">
 
                         <android.support.design.widget.TextInputLayout
+                            android:id="@+id/git_layout"
                             style="@style/text_input_layout">
 
                             <EditText
@@ -203,6 +215,7 @@
                     </LinearLayout>
 
                     <ImageView
+                        android:id="@+id/git_open_img"
                         style="@style/icon.right"
                         android:src="@drawable/ic_visibility_black_24dp"/>
 

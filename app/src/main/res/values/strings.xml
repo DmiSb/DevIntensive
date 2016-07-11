@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Сбродов Дмитрий</string>
+    <string name="app_title">DevIntensive</string>
 
     <string name="phone_hint">Мобильный телефон</string>
     <string name="phone_value">7 (932) 848 5791</string>
@@ -11,18 +12,41 @@
     <string name="vk_value">vk.com/id91548254</string>
 
     <string name="git_hint">Репозиторий</string>
-    <string name="git_value">https://github.com/DmiSb/DevIntensive</string>
+    <string name="git_value">github.com/DmiSb/DevIntensive</string>
 
     <string name="self_hint">О себе</string>
     <string name="self_value">Введите информацию о себе: Работа, хобби, семья, дети ... )))</string>
 
-    <string name="rating_item_1.value">1</string>
-    <string name="rating_item_1.text">Рейтинг</string>
-    <string name="rating_item_2.value">1</string>
-    <string name="rating_item_2.text">Написано строк кода</string>
-    <string name="rating_item_3.value">1</string>
-    <string name="rating_item_3.text">Проектов</string>
+    <string name="rating_item_1_value">1</string>
+    <string name="rating_item_1_text">Рейтинг</string>
+    <string name="rating_item_2_value">1</string>
+    <string name="rating_item_2_text">Написано строк кода</string>
+    <string name="rating_item_3_value">1</string>
+    <string name="rating_item_3_text">Проектов</string>
 
     <string name="drawer_profile_menu">Мой профиль</string>
     <string name="drower_team_menu">Команда</string>
+
+    <string name="user_profile_placeholder_image">Изменить фотографию профиля</string>
+    <string name="user_profile_dialog_gallery">Загрузить из галереи</string>
+    <string name="user_profile_dialog_camera">Сделать снимок</string>
+    <string name="user_profile_dialog_cancel">Отмена</string>
+
+    <string name="message_choise_photo">Выберите фото</string>
+    <string name="message_permission_needed">Для корректной работы необходимо дать требуемые разрешения</string>
+    <string name="message_permission">Разрешить</string>
+    <string name="login_title">ВОЙТИ</string>
+    <string name="login_password">Пароль</string>
+    <string name="login_fogott_password">Забыли пароль?</string>
+
+    <string name="mail_send_action">Отправка письма...</string>
+    <string name="mail_error_action">"Ошибка отправки письма: "</string>
+    <string name="create_file_error">"Ошибка создания файла фото: "</string>
+    <string name="login_email_empty">Не указан e-mail пользователя</string>
+    <string name="login_password_empty">Не указан пароль пользователя</string>
+
+    <string name="phone_error_value">Некорректный номер: менее 11 символов</string>
+    <string name="email_error_value">Некорректный E-mail</string>
+    <string name="link_error_value">Некорректная ссылка</string>
+
 </resources>
