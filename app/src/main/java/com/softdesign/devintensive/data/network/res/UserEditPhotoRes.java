@@ -4,9 +4,9 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Модель данных ответа после успешной авторизации
+ * Модель данных возвращаемая после загрузки фото на сервер
  */
-public class UserModelRes {
+public class UserEditPhotoRes {
 
     @SerializedName("success")
     @Expose
@@ -20,20 +20,15 @@ public class UserModelRes {
     }
 
     public class Data {
-
-        @SerializedName("user")
+        @SerializedName("photo")
         @Expose
-        private UserModel.User user;
-        @SerializedName("token")
+        private String photo;
+        @SerializedName("updated")
         @Expose
-        private String token;
+        private String updated;
 
-        public UserModel.User getUser() {
-            return user;
-        }
-
-        public String getToken() {
-            return token;
+        public String getLastUpdated() {
+            return updated;
         }
     }
 }

@@ -1,7 +1,7 @@
 package com.softdesign.devintensive.data.network.req;
 
 /**
- *
+ * Класс запроса авторизации
  */
 public class UserLoginReq {
 

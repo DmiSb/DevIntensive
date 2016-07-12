@@ -5,7 +5,8 @@ import android.graphics.Bitmap;
 import com.squareup.picasso.Transformation;
 
 /**
- *
+ * Класс транформации для скругдения изображения
+ * для загрузки через Picasso
  */
 public class TransformRoundedImage implements Transformation {
 

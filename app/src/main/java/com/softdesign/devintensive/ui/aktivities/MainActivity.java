@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Environment;
@@ -39,8 +40,10 @@ import android.widget.TextView;
 
 import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.data.managers.DataManager;
+import com.softdesign.devintensive.data.network.res.UserEditPhotoRes;
 import com.softdesign.devintensive.utils.ConstantManager;
 import com.softdesign.devintensive.utils.EditTextValidator;
+import com.softdesign.devintensive.utils.NetworkStatusChecker;
 import com.softdesign.devintensive.utils.TransformAndCropImage;
 import com.softdesign.devintensive.utils.TransformRoundedImage;
 import com.softdesign.devintensive.utils.ViewBehavior;
@@ -57,6 +60,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Response;
 
 /**
  * Главное окно
@@ -368,7 +373,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     /**
-     * Результат
+     * Результат загрузки фото во вью
      */
     Callback callBack = new Callback(){
         @Override
@@ -673,6 +678,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         Log.d(TAG, "insertProfileImage");
 
         Picasso.with(this).load(selectedImage).transform(new TransformAndCropImage()).into(mUserImage);
+
+        if (!selectedImage.equals(mDataManager.getPreferencesManager().loadUserPhoto())) {
+            uploadUserPhoto(selectedImage);
+        }
+
         mDataManager.getPreferencesManager().saveUserPhoto(selectedImage);
         hideProfilePlaceholder();
     }
@@ -791,6 +801,56 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     openApplicationSetting();
                 }
             }).show();
+        }
+    }
+
+    /**
+     * Получение абсолютного пути к файлу
+     *
+     * @param uri - путь к файлу
+     * @return - абсолютный путь к файлу
+     */
+    private String getRealPathFromURI(Uri uri) {
+        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+        if (cursor == null) {
+            return uri.getPath();
+        } else {
+            cursor.moveToFirst();
+            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+            return cursor.getString(idx);
+        }
+    }
+
+    /**
+     * Загрузка файла фото пользователя на сайт
+     *
+     * @param fileUri - абсолютный путь файлу
+     */
+    private void uploadUserPhoto(Uri fileUri) {
+
+        if (NetworkStatusChecker.isNetworkAvailable(this)) {
+
+            String file = getRealPathFromURI(fileUri);
+
+            Call<UserEditPhotoRes> call = mDataManager.editUserPhoto(Uri.parse(file));
+            call.enqueue(new retrofit2.Callback<UserEditPhotoRes>() {
+                @Override
+                public void onResponse(Call<UserEditPhotoRes> call, Response<UserEditPhotoRes> response) {
+                    if (response.code() == 200) {
+                        showSnackBar("Успешная загрузка файла");
+                        mDataManager.getPreferencesManager().saveUserPhotoUpdated(response.body().getData().getLastUpdated());
+                    } else {
+                        showSnackBar("Ошибка загрузки : " + Integer.toString(response.code()));
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<UserEditPhotoRes> call, Throwable t) {
+                    showSnackBar("Нет ответа сервера");
+                }
+            });
+        } else {
+            showSnackBar("Сеть не доступна, попробуйте позже");
         }
     }
 

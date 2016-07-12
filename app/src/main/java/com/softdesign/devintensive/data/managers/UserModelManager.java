@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * Вспомогательный класс для сохранения модели данных профиля пользователя в Preferenses
  */
 public class UserModelManager {
 
@@ -45,6 +45,11 @@ public class UserModelManager {
         // Сохранение Uri аватарки пользователя
         uri = Uri.parse(userModel.getData().getUser().getPublicInfo().getAvatar());
         dataManager.getPreferencesManager().saveUserAvatar(uri);
+
+        // Сохраняем время обновления
+        String lastUpdated = userModel.getData().getUser().getPublicInfo().getLastUpdated();
+        dataManager.getPreferencesManager().saveUserPhotoUpdated(lastUpdated);
+
 
     }
 }

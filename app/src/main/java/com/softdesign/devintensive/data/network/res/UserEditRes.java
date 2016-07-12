@@ -4,9 +4,9 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Модель данных ответа после успешной авторизации
+ * Модель данных ответа после успешного обновления данных
  */
-public class UserModelRes {
+public class UserEditRes {
 
     @SerializedName("success")
     @Expose
@@ -23,17 +23,7 @@ public class UserModelRes {
 
         @SerializedName("user")
         @Expose
-        private UserModel.User user;
-        @SerializedName("token")
-        @Expose
-        private String token;
+        public UserModel.User user;
 
-        public UserModel.User getUser() {
-            return user;
-        }
-
-        public String getToken() {
-            return token;
-        }
     }
 }

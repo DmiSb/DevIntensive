@@ -3,7 +3,6 @@ package com.softdesign.devintensive.data.managers;
 import android.content.SharedPreferences;
 import android.net.Uri;
 
-import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.utils.ConstantManager;
 import com.softdesign.devintensive.utils.DevIntensiveApp;
 
@@ -55,14 +54,8 @@ public class PreferencesManager {
      */
     public List<String> loadUserProfileData (){
         List<String> userFields = new ArrayList<>();
-        //List<String> defaultUserData = new ArrayList<>();
-        //defaultUserData.add(DevIntensiveApp.getContext().getResources().getString(R.string.phone_value));
-        //defaultUserData.add(DevIntensiveApp.getContext().getResources().getString(R.string.email_value));
-        //defaultUserData.add(DevIntensiveApp.getContext().getResources().getString(R.string.vk_value));
-        //defaultUserData.add(DevIntensiveApp.getContext().getResources().getString(R.string.git_value));
-        //defaultUserData.add(DevIntensiveApp.getContext().getResources().getString(R.string.self_value));
         for (int i = 0; i < USER_FIELDS.length; i++) {
-            userFields.add(mSharedPreferences.getString(USER_FIELDS[i], ""/*defaultUserData.get(i)*/));
+            userFields.add(mSharedPreferences.getString(USER_FIELDS[i], ""));
         }
         return userFields;
     }
@@ -79,35 +72,70 @@ public class PreferencesManager {
     }
 
     /**
+     * Сохранение времени изменения фото
+     *
+     * @param lastUpdated
+     */
+    public void saveUserPhotoUpdated(String lastUpdated) {
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putString(ConstantManager.USER_PHOTO_UPDATE_KEY, lastUpdated);
+        editor.apply();
+    }
+
+    /**
      * Получение фотографии профиля
      *
      * @return
      */
     public Uri loadUserPhoto() {
         return Uri.parse(mSharedPreferences.getString(ConstantManager.USER_PHOTO_KEY, ""));
-                //"android.resource://com.softdesign.devintensive/drawable/user_photo"));
     }
 
+    /**
+     * Сохранение токена
+     *
+     * @param authToken - токен
+     */
     public void saveAuthToken(String authToken) {
         SharedPreferences.Editor editor = mSharedPreferences.edit();
         editor.putString(ConstantManager.AUTH_TOKEN_KEY, authToken);
         editor.apply();
     }
 
+    /**
+     * Получение токена
+     *
+     * @return - токен
+     */
     public String getAuthToken() {
         return mSharedPreferences.getString(ConstantManager.AUTH_TOKEN_KEY, "null");
     }
 
+    /**
+     * Сохранение ИД пользователя
+     *
+     * @param userId - ИД
+     */
     public void saveUserId(String userId) {
         SharedPreferences.Editor editor = mSharedPreferences.edit();
         editor.putString(ConstantManager.USER_ID_KEY, userId);
         editor.apply();
     }
 
+    /**
+     * Получение ИД пользователя
+     *
+     * @return - ИД
+     */
     public String getUserId() {
         return mSharedPreferences.getString(ConstantManager.USER_ID_KEY, "null");
     }
 
+    /**
+     * Сохранение значений рейтинга
+     *
+     * @param userRatings - массив значений рейтинга
+     */
     public void saveUserRatingValues(int[] userRatings) {
         SharedPreferences.Editor editor = mSharedPreferences.edit();
 
@@ -117,6 +145,11 @@ public class PreferencesManager {
         editor.apply();
     }
 
+    /**
+     * Получение значений рейтинга
+     *
+     * @return - строковые значения рейтинга
+     */
     public List<String> loadUserRatingValues() {
         List<String> userRatings = new ArrayList<>();
         for (int i = 0; i < USER_RATINGS.length; i++) {

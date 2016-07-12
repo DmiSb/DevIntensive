@@ -143,7 +143,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
                 @Override
                 public void onFailure(Call<UserModelRes> call, Throwable t) {
-                    // TODO: 10.07.2016 обработать ошибки
+                    showSnackBar("Нет ответа сервера");
                 }
             });
         } else {

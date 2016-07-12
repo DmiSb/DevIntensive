@@ -3,7 +3,7 @@ package com.softdesign.devintensive.utils;
 import okhttp3.HttpUrl;
 
 /**
- * 
+ * Вспомогательный класс для хранения настроек приложения
  */
 public interface AppConfig {
 
