@@ -3,6 +3,7 @@ package com.softdesign.devintensive.ui.aktivities;
 import android.Manifest;
 import android.app.Dialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -36,6 +37,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.data.managers.DataManager;
@@ -43,7 +45,9 @@ import com.softdesign.devintensive.utils.ConstantManager;
 import com.softdesign.devintensive.utils.EditTextValidator;
 import com.softdesign.devintensive.utils.RoundedDrawable;
 import com.softdesign.devintensive.utils.TransformAndCropImage;
+import com.softdesign.devintensive.utils.TransformRoundedImage;
 import com.softdesign.devintensive.utils.ViewBehavior;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -86,6 +90,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @BindViews({R.id.call_img, R.id.mail_send_img, R.id.vk_open_img, R.id.git_open_img}) List<ImageView> mUserInfoImgs;
     @BindViews({R.id.phone_et, R.id.email_et, R.id.vk_et, R.id.git_et, R.id.self_et}) List<EditText> mUserInfoViews;
     @BindViews({R.id.phone_layout, R.id.email_layout, R.id.vk_layout, R.id.git_layout}) List<TextInputLayout> mUserInfoLayouts;
+
+    @BindViews({R.id.rating_value, R.id.rating_code_line, R.id.rating_project}) List<TextView> mUserRatings;
 
     private ImageView mAvatar;
     private AppBarLayout.LayoutParams mAppBarParams = null;
@@ -135,17 +141,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         setupToolBar();
         setupDrawer();
 
-        if (mAvatar != null) {
-            mAvatar.setImageBitmap(
-                RoundedDrawable.getRoundedBitmap(
-                    BitmapFactory.decodeResource(getResources(), R.drawable.avatar)));
-        }
+        // Инициализируем рейтинг
+        initUserRatings();
+        // Инициализируем полей профиля пользователя
+        initUserFields();
+        // Иницализация фото пользователя
+        initUserPhotoWhithProgress();
 
-        loadUserInfoValue();
-        Picasso.with(this)
-                .load(mDataManager.getPreferencesManager().loadUserPhoto())
-                .placeholder(R.drawable.user_photo)
-                .into(mUserImage);
+        // Инициализация аватарки через Picacco
+        if (mAvatar != null)
+            Picasso.with(this)
+                    .load(mDataManager.getPreferencesManager().loadUserAvatar())
+                    .transform(new TransformRoundedImage())
+                    .into(mAvatar);
 
         List<String> userData = mDataManager.getPreferencesManager().loadUserProfileData();
         mUserInfoValidator = new ArrayList<EditTextValidator>(4);
@@ -159,7 +167,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         params.setBehavior(vBehavior);
 
         if (savedInstanceState == null) {
-            mExternalStoragePictureDirectory = getExternalStoragePictureDirectory();
+
         } else {
             mCurrentEditMode = savedInstanceState.getInt(ConstantManager.EDIT_MODE_KEY, 0);
             changeEditMode(mCurrentEditMode);
@@ -179,13 +187,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d(TAG, "onStart");
+        Log.d(TAG, "onStart : " + new Date().toString());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume");
+        Log.d(TAG, "onResume : " + new Date().toString());
     }
 
     @Override
@@ -193,7 +201,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         super.onPause();
         Log.d(TAG, "onPause");
 
-        loadUserInfoValue();
+        initUserFields();
     }
 
     @Override
@@ -233,8 +241,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 showDialog(ConstantManager.LOAD_PROFILE_PHOTO);
                 break;
             case R.id.call_img:
-                //showProgress();
-                //runWithDalay();
                 callUserPhone();
                 break;
             case R.id.mail_send_img:
@@ -363,6 +369,49 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     /**
+     * Результат
+     */
+    Callback callBack = new Callback(){
+        @Override
+        public void onSuccess(){
+            Log.d(TAG, "end loading user photo - " + new Date().toString());
+            hideProgress();
+        }
+        @Override
+        public void onError(){
+            Log.d(TAG, "error loading user photo - " + new Date().toString());
+            hideProgress();
+        }
+    };
+
+    /**
+     * Загрузк фото профиля пользователя через Picasso
+     */
+    private void setUserPhotoIntoView() {
+        Log.d(TAG, "start loading user photo - " + new Date().toString());
+
+        Picasso.with(this)
+                .load(mDataManager.getPreferencesManager().loadUserPhoto())
+                .into(mUserImage, callBack);
+    }
+
+    /**
+     * Загрузк фото профиля пользователя через Picasso с отображением прогресса
+     */
+    private void initUserPhotoWhithProgress() {
+        Log.d(TAG, "initUserPhotoWhithProgress");
+
+        showProgress();
+        final Handler handler = new Handler();
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                setUserPhotoIntoView();
+            }
+        });
+    }
+
+    /**
      * Настройка toolbar
      */
     private void setupToolBar() {
@@ -450,7 +499,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             // Разблокируем тулбар
             unlockToolbar();
             mCollapsingToolbar.setExpandedTitleColor(getResources().getColor(R.color.white));
-            saveUserInfoValue();
+            saveUserFields();
         }
         mCurrentEditMode = mode;
     }
@@ -458,8 +507,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     /*
      * Загрузка профиля пользователя из Preferences
      */
-    private void loadUserInfoValue() {
-        Log.d(TAG, "loadUserInfoValue");
+    private void initUserFields() {
+        Log.d(TAG, "initUserFields");
 
         List<String> userData = mDataManager.getPreferencesManager().loadUserProfileData();
         for (int i = 0; i < userData.size(); i++){
@@ -469,9 +518,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     /**
      * Сохранение профиля пользователя в Preferences
-      */
-    private void saveUserInfoValue() {
-        Log.d(TAG, "saveUserInfoValue");
+     */
+    private void saveUserFields() {
+        Log.d(TAG, "saveUserFields");
 
         List<String> userData = new ArrayList<>();
         for (int i = 0; i < mUserInfoViews.size(); i++) {
@@ -481,8 +530,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     /**
+     * Сохранить рейтинг пользователя в Preferences
+     */
+    private void initUserRatings() {
+        List<String> userData = mDataManager.getPreferencesManager().loadUserRatingValues();
+        for (int i = 0; i < userData.size(); i++) {
+            mUserRatings.get(i).setText(userData.get(i));
+        }
+    }
+
+    /**
      * Загрузка фото из галереи
-      */
+     */
     private void loadPhotoFromGallery() {
         Log.d(TAG, "loadPhotoFromGallery");
 
@@ -544,6 +603,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         Сделал при первом создании активити определение дирректории с проверкой
         Файл создается в нее, опять же если подключено внешнее хранилище
         */
+
+        if (mExternalStoragePictureDirectory == null)
+            mExternalStoragePictureDirectory = getExternalStoragePictureDirectory();
 
         if (mExternalStoragePictureDirectory != null) {
             File image = File.createTempFile(fileName, ".jpg", mExternalStoragePictureDirectory);

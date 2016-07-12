@@ -1,7 +1,10 @@
 package com.softdesign.devintensive.ui.aktivities;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -9,25 +12,36 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.softdesign.devintensive.R;
+import com.softdesign.devintensive.data.managers.DataManager;
+import com.softdesign.devintensive.data.managers.UserModelManager;
+import com.softdesign.devintensive.data.network.req.UserLoginReq;
+import com.softdesign.devintensive.data.network.res.UserModelRes;
+import com.softdesign.devintensive.utils.AppConfig;
 import com.softdesign.devintensive.utils.ConstantManager;
+import com.softdesign.devintensive.utils.NetworkStatusChecker;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Окно авторизации
  */
 public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
+    private static final String TAG = ConstantManager.TAG_PREFIX + "ActivityLogin";
     /**
      * Инициализация полей
      */
-    @BindView(R.id.login_email) EditText mLoginEmail;
-    @BindView(R.id.login_password) EditText mLoginPassword;
+    @BindView(R.id.login_email_et) EditText mLogin;
+    @BindView(R.id.login_password_et) EditText mPassword;
     @BindView(R.id.login_button) Button mLoginButton;
-    @BindView(R.id.login_fogott_password) TextView mLoginFogott;
+    @BindView(R.id.login_remember) TextView mLoginRemember;
+    @BindView(R.id.login_coordinator_container) CoordinatorLayout mCoordinatorLayout;
 
-    private static final String TAG = ConstantManager.TAG_PREFIX + "LoginActivity";
+    private DataManager mDataManager;
 
     /**
      * Создание Activity
@@ -37,11 +51,15 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.login_activity);
+        setContentView(R.layout.activity_login);
 
         Log.d(TAG, "onCreate");
         ButterKnife.bind(this);
+
         mLoginButton.setOnClickListener(this);
+        mLoginRemember.setOnClickListener(this);
+
+        mDataManager = DataManager.getInstance();
     }
 
     /**
@@ -55,21 +73,81 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
         switch (v.getId()) {
             case R.id.login_button:
-                if (mLoginEmail.getText().toString().trim().isEmpty()) {
+                if (mLogin.getText().toString().trim().isEmpty()) {
                     showToast(getString(R.string.login_email_empty));
                 } else {
-                    if (mLoginPassword.getText().toString().trim().isEmpty()) {
+                    if (mPassword.getText().toString().trim().isEmpty()) {
                         showToast(getString(R.string.login_password_empty));
                     } else {
-                        Intent mainIntent = new Intent(this, MainActivity.class);
-                        startActivity(mainIntent);
-                        finish();
+                        signIn();
                     }
                 }
                 break;
-            case R.id.login_fogott_password:
-                // TODO: 06.07.2016 подсказка пароля
+            case R.id.login_remember:
+                rememberPassword();
                 break;
+        }
+    }
+
+    /**
+     * Показ сообщения в нижней части
+     * @param message - текст сообщения
+     */
+    private void showSnackBar(String message) {
+        Log.d(TAG, "showSnackBar");
+
+        Snackbar.make(mCoordinatorLayout, message, Snackbar.LENGTH_LONG).show();
+    }
+
+    /**
+     * переход на сайт при нажатии на кнопку "Забили пароль"
+     */
+    private void rememberPassword() {
+        Intent rememberIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(AppConfig.DOMEN_URL + "/forgotpass"));
+        startActivity(rememberIntent);
+    }
+
+    /**
+     * При успешной регистрации на сайте
+     *
+     * @param userModel - модель данных
+     */
+    private void loginSucces(UserModelRes userModel) {
+        showSnackBar("Вход : " + userModel.getData().getToken());
+        // Сохраняем полученные данные пользователя в Preferenses
+        UserModelManager.saveUserModelToPreferenses(mDataManager, userModel);
+
+        Intent mainIntent = new Intent(this, MainActivity.class);
+        startActivity(mainIntent);
+        finish();
+    }
+
+    /**
+     * Нажатие на кнопку Войти
+     */
+    private void signIn(){
+
+        if (NetworkStatusChecker.isNetworkAvailable(this)) {
+            Call<UserModelRes> call = mDataManager.loginUser(new UserLoginReq(mLogin.getText().toString(), mPassword.getText().toString()));
+            call.enqueue(new Callback<UserModelRes>() {
+                @Override
+                public void onResponse(Call<UserModelRes> call, Response<UserModelRes> response) {
+                    if (response.code() == 200) {
+                        loginSucces(response.body());
+                    } else if (response.code() == 404) {
+                        showSnackBar("Неправильный логин или пароль");
+                    } else {
+                        showSnackBar("Ошибка подключения");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<UserModelRes> call, Throwable t) {
+                    // TODO: 10.07.2016 обработать ошибки
+                }
+            });
+        } else {
+            showSnackBar("Сеть не доступна, попробуйте позже");
         }
     }
 }

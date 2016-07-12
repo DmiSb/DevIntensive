@@ -134,14 +134,16 @@
     <style name="login_bar">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">@dimen/spacing_normal_16</item>
-        <item name="android:layout_marginLeft">@dimen/spacing_half_large_28</item>
-        <item name="android:layout_marginRight">@dimen/spacing_half_large_28</item>
     </style>
 
     <style name="login_bar_edit">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/size_duble_small_48</item>
+    </style>
+
+    <style name="AppTheme.Button.Red" parent="Base.Widget.AppCompat.Button">
+        <item name="colorButtonNormal">@color/color_accent</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
 </resources>

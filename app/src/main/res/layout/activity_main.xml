@@ -19,13 +19,13 @@
             android:theme="@style/AppTheme.AppBarOverlay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/color_primary_dark">
+            android:background="@color/gray_background">
 
             <android.support.design.widget.CollapsingToolbarLayout
                 android:id="@+id/collapsing_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:contentScrim="@color/color_primary"
+                app:contentScrim="@color/gray_background"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
                 <FrameLayout
@@ -37,8 +37,8 @@
                         android:id="@+id/user_photo_img"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/size_profile_image_256"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/user_photo"/>
+                        android:scaleType="centerCrop"/>
+                        <!-- android:src="@drawable/user_photo"/> -->
 
                     <RelativeLayout
                         android:id="@+id/profile_placeholder"
