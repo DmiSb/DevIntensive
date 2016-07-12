@@ -3,11 +3,9 @@ package com.softdesign.devintensive.ui.aktivities;
 import android.Manifest;
 import android.app.Dialog;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Environment;
@@ -43,7 +41,6 @@ import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.data.managers.DataManager;
 import com.softdesign.devintensive.utils.ConstantManager;
 import com.softdesign.devintensive.utils.EditTextValidator;
-import com.softdesign.devintensive.utils.RoundedDrawable;
 import com.softdesign.devintensive.utils.TransformAndCropImage;
 import com.softdesign.devintensive.utils.TransformRoundedImage;
 import com.softdesign.devintensive.utils.ViewBehavior;
@@ -145,15 +142,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         initUserRatings();
         // Инициализируем полей профиля пользователя
         initUserFields();
-        // Иницализация фото пользователя
-        initUserPhotoWhithProgress();
 
         // Инициализация аватарки через Picacco
         if (mAvatar != null)
             Picasso.with(this)
                     .load(mDataManager.getPreferencesManager().loadUserAvatar())
                     .transform(new TransformRoundedImage())
+                    .placeholder(R.drawable.avatar_empty)
                     .into(mAvatar);
+
+        // Иницализация фото пользователя
+        initUserPhotoWhithProgress();
 
         List<String> userData = mDataManager.getPreferencesManager().loadUserProfileData();
         mUserInfoValidator = new ArrayList<EditTextValidator>(4);
