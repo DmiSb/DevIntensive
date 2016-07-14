@@ -11,56 +11,7 @@
         android:id="@+id/rating_bar"
         style="@style/rating_bar">
 
-        <LinearLayout
-            style="@style/rating_bar_item"
-            android:layout_weight="0.25">
-
-            <TextView
-                android:id="@+id/rating_value"
-                style="@style/rating_bar_text.value"
-                android:text="@string/rating_item_1_value"/>
-
-            <TextView
-                style="@style/rating_bar_text"
-                android:text="@string/rating_item_1_text"/>
-
-        </LinearLayout>
-
-        <View
-            style="@style/vertical_divider"/>
-
-        <LinearLayout
-            style="@style/rating_bar_item"
-            android:layout_weight="0.5">
-
-            <TextView
-                android:id="@+id/rating_code_line"
-                style="@style/rating_bar_text.value"
-                android:text="@string/rating_item_2_value"/>
-
-            <TextView
-                style="@style/rating_bar_text"
-                android:text="@string/rating_item_2_text"/>
-
-        </LinearLayout>
-
-        <View
-            style="@style/vertical_divider"/>
-
-        <LinearLayout
-            style="@style/rating_bar_item"
-            android:layout_weight="0.25">
-
-            <TextView
-                android:id="@+id/rating_project"
-                style="@style/rating_bar_text.value"
-                android:text="@string/rating_item_3_value"/>
-
-            <TextView
-                style="@style/rating_bar_text"
-                android:text="@string/rating_item_3_text"/>
-
-        </LinearLayout>
+        <include layout="@layout/user_rating_content"/>
 
     </LinearLayout>
 

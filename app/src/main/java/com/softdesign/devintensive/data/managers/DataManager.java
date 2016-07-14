@@ -7,6 +7,8 @@ import com.softdesign.devintensive.data.network.RestService;
 import com.softdesign.devintensive.data.network.ServiceGenerator;
 import com.softdesign.devintensive.data.network.req.UserLoginReq;
 import com.softdesign.devintensive.data.network.res.UserEditPhotoRes;
+import com.softdesign.devintensive.data.network.res.UserListRes;
+import com.softdesign.devintensive.data.network.res.UserLoginRes;
 import com.softdesign.devintensive.data.network.res.UserModelRes;
 import com.softdesign.devintensive.utils.DevIntensiveApp;
 
@@ -61,6 +63,14 @@ public class DataManager {
         MultipartBody.Part bodyPart =
             MultipartBody.Part.createFormData("photo", file.getName(), requestBody);
         return mRestService.editUserPhoto(mPreferencesManager.getUserId(), bodyPart);
+    }
+
+    public Call<UserLoginRes> checkToken() {
+        return mRestService.checkToken(mPreferencesManager.getUserId());
+    }
+
+    public Call<UserListRes> getUserList() {
+        return mRestService.getUserList();
     }
 
     //endregion
