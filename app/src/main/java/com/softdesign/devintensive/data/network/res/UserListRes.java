@@ -61,7 +61,7 @@ public class UserListRes {
         }
 
         public String getFullName() {
-            return firstName + " " + secondName;
+            return secondName + " " + firstName;
         }
 
         public UserModel.ProfileValues getProfileValues() {

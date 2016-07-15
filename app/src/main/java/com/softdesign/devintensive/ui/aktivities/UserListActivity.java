@@ -24,11 +24,12 @@ import com.softdesign.devintensive.data.managers.DataManager;
 import com.softdesign.devintensive.data.network.res.UserListRes;
 import com.softdesign.devintensive.data.storage.models.UserDTO;
 import com.softdesign.devintensive.ui.adapters.UsersAdapter;
+import com.softdesign.devintensive.ui.fragments.RetainFragment;
 import com.softdesign.devintensive.utils.ConstantManager;
 import com.softdesign.devintensive.utils.TransformRoundedImage;
 import com.squareup.picasso.Picasso;
 
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -53,6 +54,7 @@ public class UserListActivity extends AppCompatActivity implements SearchView.On
     private UsersAdapter mUsersAdapter;
     private List<UserListRes.UserData> mUsers;
     private ImageView mAvatar;
+    private RetainFragment mRetainFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +70,15 @@ public class UserListActivity extends AppCompatActivity implements SearchView.On
 
         setupToolbar();
         setupDrawer();
-        loadUsers();
+        if (savedInstanceState == null) {
+            mRetainFragment = new RetainFragment();
+            getSupportFragmentManager().beginTransaction().add(mRetainFragment, RetainFragment.TAG).commit();
+            loadUsers();
+        } else {
+            mRetainFragment = (RetainFragment) getSupportFragmentManager().findFragmentByTag(RetainFragment.TAG);
+            mUsers = mRetainFragment.getUserList();
+            setUserListAdapter();
+        }    
 
         if (mAvatar != null)
             Picasso.with(this)
@@ -77,6 +87,7 @@ public class UserListActivity extends AppCompatActivity implements SearchView.On
                     .placeholder(R.drawable.avatar_empty)
                     .into(mAvatar);
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -111,16 +122,8 @@ public class UserListActivity extends AppCompatActivity implements SearchView.On
                 public void onResponse(Call<UserListRes> call, Response<UserListRes> response) {
                     try {
                         mUsers = response.body().getData();
-                        mUsersAdapter = new UsersAdapter(mUsers, new UsersAdapter.UserViewHolder.CustomClickListener() {
-                            @Override
-                            public void onUserItemClickListener(int position) {
-                                UserDTO userDTO = new UserDTO(mUsers.get(position));
-                                Intent profileIntent = new Intent(UserListActivity.this, ProfileUserActivity.class);
-                                profileIntent.putExtra(ConstantManager.PARCELABLE_KEY, userDTO);
-                                startActivity(profileIntent);
-                            }
-                        });
-                        mRecyclerView.setAdapter(mUsersAdapter);
+                        mRetainFragment.setUsersList(mUsers);
+                        setUserListAdapter();
                     } catch (NullPointerException e) {
                         Log.d(TAG, e.toString());
                         showSnackBar("Ошибка получения данных с сервера");
@@ -133,6 +136,19 @@ public class UserListActivity extends AppCompatActivity implements SearchView.On
                 }
             });
         }
+    }
+
+    private void setUserListAdapter() {
+        mUsersAdapter = new UsersAdapter(mUsers, new UsersAdapter.UserViewHolder.CustomClickListener() {
+            @Override
+            public void onUserItemClickListener(int position) {
+                UserDTO userDTO = new UserDTO(mUsers.get(position));
+                Intent profileIntent = new Intent(UserListActivity.this, ProfileUserActivity.class);
+                profileIntent.putExtra(ConstantManager.PARCELABLE_KEY, userDTO);
+                startActivity(profileIntent);
+            }
+        });
+        mRecyclerView.setAdapter(mUsersAdapter);
     }
 
     private void setupDrawer() {
@@ -169,6 +185,17 @@ public class UserListActivity extends AppCompatActivity implements SearchView.On
 
     @Override
     public boolean onQueryTextChange(String newText) {
+        String newUpperText = newText.toUpperCase();
+        List<UserListRes.UserData> searhList = new ArrayList<>();
+        for (UserListRes.UserData item : mUsers) {
+            String userFullName = item.getFullName().toUpperCase();
+            if (userFullName.contains(newUpperText)) {
+                searhList.add(item);
+            }
+        }
+        if (searhList.size() > 0 ) {
+            mUsersAdapter.setSearch(searhList);
+        }
         return false;
     }
 }

@@ -13,6 +13,7 @@ import com.softdesign.devintensive.data.network.res.UserListRes;
 import com.softdesign.devintensive.ui.views.AspectRatioImageView;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,6 +43,9 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
 
         Picasso.with(mContext)
                 .load(user.getPublicInfo().getPhoto())
+                .resize(mContext.getResources().getDimensionPixelSize(R.dimen.size_profile_image_256),
+                        mContext.getResources().getDimensionPixelSize(R.dimen.size_profile_image_256))
+                .centerCrop()
                 .placeholder(mContext.getResources().getDrawable(R.drawable.user_bg))
                 .error(mContext.getResources().getDrawable(R.drawable.user_bg))
                 .into(holder.mUserPhoto);
@@ -100,6 +104,12 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
             void onUserItemClickListener(int position);
 
         }
+    }
+
+    public void setSearch(List<UserListRes.UserData> searchUsers) {
+        mUsers = new ArrayList<>();
+        mUsers.addAll(searchUsers);
+        notifyDataSetChanged();
     }
 }
 
