@@ -49,4 +49,10 @@
     <string name="email_error_value">Некорректный E-mail</string>
     <string name="link_error_value">Некорректная ссылка</string>
 
+    <string name="ff_condensed">sans-serif-condensed</string>
+    <string name="ff_medium">sans-serif-medium</string>
+    <string name="ff_regular">sans-serif-regular</string>
+
+    <string name="hint_search">Поиск</string>
+
 </resources>

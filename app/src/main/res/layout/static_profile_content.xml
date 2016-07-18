@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/rating_bar"
+            style="@style/rating_bar">
+
+            <include layout="@layout/user_rating_content"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/item_bar"
+            android:minHeight="@dimen/size_large_72">
+
+            <ImageView
+                style="@style/icon.left"
+                android:src="@drawable/github_circle_24"/>
+
+            <ListView
+                android:id="@+id/repositories_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/spacing_medium_32">
+
+            </ListView>
+
+        </LinearLayout>
+
+        <View
+            style="@style/horizontal_divider"/>
+
+        <!-- О себе -->
+        <LinearLayout
+            style="@style/item_bar">
+
+            <ImageView
+                style="@style/icon.left"
+                android:src="@drawable/ic_account_circle_black_24dp"/>
+
+            <LinearLayout
+                style="@style/item_bar_detail">
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/text_input_layout">
+
+                    <EditText
+                        android:id="@+id/self_et"
+                        android:hint="@string/self_hint"
+                        android:text="@string/self_value"
+                        android:inputType="textMultiLine"
+                        style="@style/edit_text"/>
+
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
+            <ImageView
+                style="@style/icon.right"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>

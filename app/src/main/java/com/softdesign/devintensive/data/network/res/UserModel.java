@@ -11,6 +11,12 @@ import java.util.List;
  */
 public class UserModel {
 
+    private User user;
+
+    public User getUser() {
+        return user;
+    }
+
     public class User {
 
         @SerializedName("_id")

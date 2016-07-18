@@ -15,6 +15,7 @@ import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.data.managers.DataManager;
 import com.softdesign.devintensive.data.managers.UserModelManager;
 import com.softdesign.devintensive.data.network.req.UserLoginReq;
+import com.softdesign.devintensive.data.network.res.UserLoginRes;
 import com.softdesign.devintensive.data.network.res.UserModelRes;
 import com.softdesign.devintensive.utils.AppConfig;
 import com.softdesign.devintensive.utils.ConstantManager;
@@ -60,6 +61,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         mLoginRemember.setOnClickListener(this);
 
         mDataManager = DataManager.getInstance();
+
+        checkToken();
     }
 
     /**
@@ -107,6 +110,15 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         startActivity(rememberIntent);
     }
 
+    private void startNewActivity() {
+        //Intent mainIntent = new Intent(this, MainActivity.class);
+        //startActivity(mainIntent);
+        Intent listIntent = new Intent(this, UserListActivity.class);
+        startActivity(listIntent);
+
+        finish();
+    }
+
     /**
      * При успешной регистрации на сайте
      *
@@ -117,9 +129,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         // Сохраняем полученные данные пользователя в Preferenses
         UserModelManager.saveUserModelToPreferenses(mDataManager, userModel);
 
-        Intent mainIntent = new Intent(this, MainActivity.class);
-        startActivity(mainIntent);
-        finish();
+        startNewActivity();
     }
 
     /**
@@ -143,6 +153,32 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
                 @Override
                 public void onFailure(Call<UserModelRes> call, Throwable t) {
+                    showSnackBar("Нет ответа сервера");
+                }
+            });
+        } else {
+            showSnackBar("Сеть не доступна, попробуйте позже");
+        }
+    }
+
+    private void checkToken(){
+        if (NetworkStatusChecker.isNetworkAvailable(this)) {
+            Call<UserLoginRes> call = mDataManager.checkToken();
+            call.enqueue(new Callback<UserLoginRes>() {
+                @Override
+                public void onResponse(Call<UserLoginRes> call, Response<UserLoginRes> response) {
+                    if (response.code() == 200) {
+                        UserModelManager.saveOnlyUserDataToPreferenses(mDataManager, response.body().getData());
+                        startNewActivity();
+                    } else if (response.code() == 404) {
+                        showSnackBar("Неправильный логин или пароль");
+                    } else {
+                        showSnackBar("Ошибка подключения");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<UserLoginRes> call, Throwable t) {
                     showSnackBar("Нет ответа сервера");
                 }
             });

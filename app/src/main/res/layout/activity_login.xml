@@ -89,7 +89,8 @@
                             android:id="@+id/login_password_et"
                             style="@style/login_bar_edit"
                             android:hint="@string/login_password"
-                            android:inputType="textPassword"/>
+                            android:inputType="textPassword"
+                            android:text="SdbTxcAAdp"/>
 
                     </android.support.design.widget.TextInputLayout>
 

@@ -24,6 +24,8 @@ public interface ConstantManager {
     String USER_PROJECT_KEY         = "USER_PROJECT_KEY";
     String USER_CODE_LINE_KEY       = "USER_CODE_LINE_KEY";
 
+    String PARCELABLE_KEY           = "PARCELABLE_KEY";
+
     int USER_PHONE_ID               = 0;
     int USER_EMAIL_ID               = 1;
     int USER_VK_ID                  = 2;
