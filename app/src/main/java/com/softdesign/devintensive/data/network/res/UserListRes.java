@@ -52,6 +52,10 @@ public class UserListRes {
         @Expose
         private String updated;
 
+        public String getId() {
+            return id;
+        }
+
         public String getFirstName() {
             return firstName;
         }
@@ -61,7 +65,7 @@ public class UserListRes {
         }
 
         public String getFullName() {
-            return secondName + " " + firstName;
+            return firstName + " " + secondName;
         }
 
         public UserModel.ProfileValues getProfileValues() {

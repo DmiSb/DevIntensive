@@ -40,7 +40,15 @@
 
         </FrameLayout>
 
-        <include layout="@layout/user_rating_content"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/size_large_72"
+            android:gravity="center"
+            android:background="@color/grey">
+
+            <include layout="@layout/user_rating_content"/>
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/user_self_txt"
@@ -51,6 +59,7 @@
             android:maxLines="3"
             android:paddingLeft="@dimen/spacing_normal_16"
             android:paddingRight="@dimen/spacing_normal_16"
+            android:paddingTop="@dimen/spacing_small_8"
             android:fontFamily="@string/ff_regular"
             android:textSize="@dimen/font_normal_14"/>
 

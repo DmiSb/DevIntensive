@@ -78,7 +78,7 @@ public class UserModel {
 
         @SerializedName("repo")
         @Expose
-        private List<Repo> repo = new ArrayList<Repo>();
+        private List<Repo> repo = new ArrayList<>();
         @SerializedName("updated")
         @Expose
         private String updated;
@@ -99,6 +99,10 @@ public class UserModel {
         @SerializedName("title")
         @Expose
         private String title;
+
+        public String getId() {
+            return id;
+        }
 
         public String getGit() {
             return git;
@@ -155,7 +159,7 @@ public class UserModel {
             return projects;
         }
 
-        public int getLinesCode() {
+        public int getCodeLines() {
             return linesCode;
         }
 
@@ -179,7 +183,7 @@ public class UserModel {
         @Expose
         private String updated;
 
-        public String getBio() {
+        public String getSelf() {
             return bio;
         }
 

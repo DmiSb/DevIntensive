@@ -84,12 +84,10 @@
     <!-- Rating bar Styles -->
     <style name="rating_bar">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_height">@dimen/size_huge_112</item>
         <item name="android:background">@color/grey</item>
         <item name="android:orientation">horizontal</item>
         <item name="android:gravity">center</item>
-        <item name="android:paddingTop">@dimen/spacing_half_large_28</item>
-        <item name="android:paddingBottom">@dimen/spacing_half_large_28</item>
     </style>
 
     <style name="rating_bar_item">
@@ -151,6 +149,25 @@
         <item name="android:textColorPrimary">@color/white</item>
         <item name="android:textColorSecondary">@color/white</item>
         <item name="android:actionMenuTextColor">@color/white</item>
+    </style>
+
+    <!-- LogoActivity -->
+    <style name="logo_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:fontFamily">@string/ff_condensed</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="logo_text_title" parent="logo_text">
+        <item name="android:paddingBottom">@dimen/size_huge_112</item>
+        <item name="android:textSize">@dimen/font_huge_48</item>
+    </style>
+
+    <style name="logo_text_name" parent="logo_text">
+        <item name="android:paddingBottom">@dimen/spacing_normal_16</item>
+        <item name="android:textSize">@dimen/font_larger_24</item>
     </style>
 
 </resources>

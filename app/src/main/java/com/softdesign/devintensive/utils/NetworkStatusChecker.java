@@ -5,7 +5,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 /**
- *
+ * Класс проверки статуса сетевого соединения
  */
 public class NetworkStatusChecker {
 

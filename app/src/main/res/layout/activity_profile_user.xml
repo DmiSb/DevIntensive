@@ -42,7 +42,24 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/static_profile_content"/>
+    <LinearLayout
+        android:id="@+id/rating_bar"
+        style="@style/rating_bar"
+        app:layout_behavior=".ui.behaviors.ViewBehavior"
+        app:behavior_min_height="@dimen/size_medium_56">
+
+        <include layout="@layout/user_rating_content"/>
+
+    </LinearLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior=".ui.behaviors.CustomNestedScrollBehavior">
+
+        <include layout="@layout/static_profile_content"/>
+
+    </android.support.v4.widget.NestedScrollView>
 
 </android.support.design.widget.CoordinatorLayout>
 

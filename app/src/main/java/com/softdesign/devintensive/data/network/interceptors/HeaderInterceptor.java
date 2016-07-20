@@ -10,7 +10,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 /**
- *
+ * Интерсептор для дополнения заголовка запроса на сервер
  */
 public class HeaderInterceptor implements Interceptor {
     @Override
@@ -20,7 +20,8 @@ public class HeaderInterceptor implements Interceptor {
         Request.Builder requestBuilder = original.newBuilder()
                 .header("X-Access-Token", pm.getAuthToken())
                 .header("Request-User-Id", pm.getUserId())
-                .header("User-Agent", "DevIntensiveApp");
+                .header("User-Agent", "DevIntensiveApp")
+                .header("Cashe-control", "max_age=" + (60*60*24));
         Request request = requestBuilder.build();
         return chain.proceed(request);
     }

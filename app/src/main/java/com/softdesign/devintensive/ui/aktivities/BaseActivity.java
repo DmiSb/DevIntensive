@@ -3,6 +3,8 @@ package com.softdesign.devintensive.ui.aktivities;
 import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
@@ -46,6 +48,15 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
+            mProgressDialog = null;
+        }
+    }
+
     /**
      * Показать ошибку
      *
@@ -63,9 +74,19 @@ public class BaseActivity extends AppCompatActivity {
      *
      * @param message
      */
-    public void showToast(String message) {
+    public void showToast( String message) {
         Log.d(TAG, "showToast: " + message);
 
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    }
+
+    /**
+     * Показ сообщения в нижней части
+     * @param message - текст сообщения
+     */
+    public void showSnackBar(CoordinatorLayout coordinatorLayout, String message) {
+        Log.d(TAG, "showSnackBar");
+
+        Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_LONG).show();
     }
 }

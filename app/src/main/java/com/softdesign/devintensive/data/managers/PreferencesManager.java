@@ -3,6 +3,7 @@ package com.softdesign.devintensive.data.managers;
 import android.content.SharedPreferences;
 import android.net.Uri;
 
+import com.softdesign.devintensive.ui.aktivities.MainActivity;
 import com.softdesign.devintensive.utils.ConstantManager;
 import com.softdesign.devintensive.utils.DevIntensiveApp;
 
@@ -10,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Класс сохранения и получения данных
+ * Класс сохранения и получения данных при переворотах
  */
 public class PreferencesManager {
 
@@ -108,7 +109,7 @@ public class PreferencesManager {
      * @return - токен
      */
     public String getAuthToken() {
-        return mSharedPreferences.getString(ConstantManager.AUTH_TOKEN_KEY, "null");
+        return mSharedPreferences.getString(ConstantManager.AUTH_TOKEN_KEY, "");
     }
 
     /**
@@ -128,7 +129,7 @@ public class PreferencesManager {
      * @return - ИД
      */
     public String getUserId() {
-        return mSharedPreferences.getString(ConstantManager.USER_ID_KEY, "null");
+        return mSharedPreferences.getString(ConstantManager.USER_ID_KEY, "");
     }
 
     /**
@@ -176,5 +177,18 @@ public class PreferencesManager {
      */
     public Uri loadUserAvatar() {
         return Uri.parse(mSharedPreferences.getString(ConstantManager.USER_AVATAR_KEY, ""));
+    }
+
+    /**
+     *
+     */
+    public void saveLastActivity(String actuvity) {
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putString(ConstantManager.LAST_ACTIVITY_KEY, actuvity);
+        editor.apply();
+    }
+
+    public String getLastActivity() {
+        return mSharedPreferences.getString(ConstantManager.LAST_ACTIVITY_KEY, "MainActivity");
     }
 }

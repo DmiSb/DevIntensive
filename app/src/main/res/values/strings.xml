@@ -53,6 +53,8 @@
     <string name="ff_medium">sans-serif-medium</string>
     <string name="ff_regular">sans-serif-regular</string>
 
-    <string name="hint_search">Поиск</string>
+    <string name="hint_search">Поиск пользователя</string>
+
+    <string name="by">by</string>
 
 </resources>
