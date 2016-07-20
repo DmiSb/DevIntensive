@@ -191,4 +191,34 @@ public class PreferencesManager {
     public String getLastActivity() {
         return mSharedPreferences.getString(ConstantManager.LAST_ACTIVITY_KEY, "MainActivity");
     }
+
+    public void saveRemoteIdList(List<String> remoteIdList){
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        String s = "";
+        if (remoteIdList.size() > 0) {
+            for (int i = 0; i < remoteIdList.size(); i++) {
+                if (s == "") {
+                    s = remoteIdList.get(i);
+                } else {
+                    s = s + ";" + remoteIdList.get(i);
+                }
+            }
+        }
+        editor.putString(ConstantManager.REMOTE_IDS_KEY, s);
+        editor.apply();
+    }
+
+    public List<String> getRemoteIdList() {
+        List<String> remoteIdList = new ArrayList<>();
+        String s = mSharedPreferences.getString(ConstantManager.REMOTE_IDS_KEY, "");
+        if (s != "") {
+            String[] tmp = s.split(";");
+            if (tmp.length > 0) {
+                for (int i = 0; i < tmp.length; i++) {
+                    remoteIdList.add(tmp[i]);
+                }
+            }
+        }
+        return remoteIdList;
+    }
 }

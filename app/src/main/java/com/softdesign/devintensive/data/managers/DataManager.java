@@ -22,6 +22,8 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -208,6 +210,42 @@ public class DataManager {
     }
 
     /**
+     * Сортировка списка пользователей по сохраненному порядку
+     *
+     * @param userList
+     * @return
+     */
+    private List<User> sortUserList(List<User> userList) {
+
+        Map<Integer, User> mapUsers = new TreeMap();
+        List<String> allRemoteId = DataManager.getInstance().getPreferencesManager().getRemoteIdList();
+
+        if (allRemoteId.size() > 0) {
+            if (userList.size() > 0) {
+                int idx;
+                for (int i = 0; i < userList.size(); i++) {
+                    idx = allRemoteId.indexOf(userList.get(i).getRemoteId());
+                    mapUsers.put(idx, userList.get(i));
+                }
+
+                if (mapUsers.size() > 0) {
+                    userList.clear();
+                    for (Map.Entry<Integer, User> item : mapUsers.entrySet()) {
+                        userList.add(item.getValue());
+                    }
+                }
+            }
+        } else {
+            for (int i = 0; i < userList.size(); i++) {
+                allRemoteId.add(userList.get(i).getRemoteId());
+            }
+            DataManager.getInstance().getPreferencesManager().saveRemoteIdList(allRemoteId);
+        }
+
+        return userList;
+    }
+
+    /**
      * Получение списка ползователй из БД
      *
      * @return - список
@@ -221,6 +259,9 @@ public class DataManager {
                     .orderDesc(UserDao.Properties.Rating)
                     .build()
                     .list();
+
+            userList = sortUserList(userList);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -244,6 +285,9 @@ public class DataManager {
                     .orderDesc(UserDao.Properties.Rating)
                     .build()
                     .list();
+
+            userList = sortUserList(userList);
+
         } catch (Exception e) {
             e.printStackTrace();
         }

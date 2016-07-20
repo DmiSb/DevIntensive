@@ -110,7 +110,6 @@ public class UserDataHelper {
                         mRepositoryDao.insertOrReplaceInTx(allRepositories);
                         mUserDao.insertOrReplaceInTx(allUsers);
 
-
                         mDataManager.getBus().post(new EventBus.EventSaveInDbBus(ConstantManager.EMPTY_STRING));
                     } else {
                         mDataManager.getBus().post(new EventBus.EventSaveInDbBus(ConstantManager.ERROR_USER_LIST));

@@ -126,6 +126,15 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
         Collections.swap(mUsers, fromPosition, toPosition);
         notifyItemMoved(fromPosition, toPosition);
 
+        List<String> tmp = DataManager.getInstance().getPreferencesManager().getRemoteIdList();
+        if (tmp.size() > 0) {
+            int f = tmp.indexOf(mUsers.get(fromPosition).getRemoteId());
+            int t = tmp.indexOf(mUsers.get(toPosition).getRemoteId());
+
+            Collections.swap(tmp, f, t);
+            DataManager.getInstance().getPreferencesManager().saveRemoteIdList(tmp);
+        }
+
         return true;
     }
 

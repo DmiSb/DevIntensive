@@ -16,7 +16,6 @@ public interface ConstantManager {
     String USER_AVATAR_KEY          = "USER_AVATAR_KEY";
     String USER_PHOTO_UPDATE_KEY    = "USER_PHOTO_UPDATE_KEY";
 
-
     String AUTH_TOKEN_KEY           = "AUTH_TOKEN_KEY";
     String USER_ID_KEY              = "USER_ID_KEY";
 
@@ -26,6 +25,7 @@ public interface ConstantManager {
 
     String PARCELABLE_KEY           = "PARCELABLE_KEY";
     String LAST_ACTIVITY_KEY        = "LAST_ACTIVITY_KEY";
+    String REMOTE_IDS_KEY           = "REMOTE_IDS_KEY";
 
     int USER_PHONE_ID               = 0;
     int USER_EMAIL_ID               = 1;
