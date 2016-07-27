@@ -5,16 +5,17 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import com.softdesign.devintensive.data.network.res.UserListRes;
+import com.softdesign.devintensive.data.storage.models.User;
 import com.softdesign.devintensive.utils.ConstantManager;
 
 import java.util.List;
 
 /**
- * RetainFragment
+ * RetainFragment для сохранения данных при повороте окна
  */
 public class RetainFragment extends Fragment {
 
-    private List<UserListRes.UserData> mUserList;
+    private List<User> mUserList;
     public static final String TAG = ConstantManager.TAG_PREFIX + "RetainFragment";
 
     @Override
@@ -23,11 +24,11 @@ public class RetainFragment extends Fragment {
         setRetainInstance(true);
     }
 
-    public List<UserListRes.UserData> getUserList() {
+    public List<User> getUserList() {
         return mUserList;
     }
 
-    public void setUsersList(List<UserListRes.UserData> userList) {
+    public void setUsersList(List<User> userList) {
         mUserList = userList;
     }
 }

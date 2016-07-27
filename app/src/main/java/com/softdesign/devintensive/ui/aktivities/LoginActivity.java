@@ -3,8 +3,8 @@ package com.softdesign.devintensive.ui.aktivities;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -13,19 +13,17 @@ import android.widget.TextView;
 
 import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.data.managers.DataManager;
-import com.softdesign.devintensive.data.managers.UserModelManager;
-import com.softdesign.devintensive.data.network.req.UserLoginReq;
-import com.softdesign.devintensive.data.network.res.UserLoginRes;
-import com.softdesign.devintensive.data.network.res.UserModelRes;
+import com.softdesign.devintensive.data.storage.helpers.UserDataHelper;
+import com.softdesign.devintensive.data.storage.models.RepositoryDao;
+import com.softdesign.devintensive.data.storage.models.UserDao;
 import com.softdesign.devintensive.utils.AppConfig;
 import com.softdesign.devintensive.utils.ConstantManager;
+import com.softdesign.devintensive.utils.EventBus;
 import com.softdesign.devintensive.utils.NetworkStatusChecker;
+import com.squareup.otto.Subscribe;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * Окно авторизации
@@ -33,9 +31,7 @@ import retrofit2.Response;
 public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
     private static final String TAG = ConstantManager.TAG_PREFIX + "ActivityLogin";
-    /**
-     * Инициализация полей
-     */
+    // Инициализация полей
     @BindView(R.id.login_email_et) EditText mLogin;
     @BindView(R.id.login_password_et) EditText mPassword;
     @BindView(R.id.login_button) Button mLoginButton;
@@ -43,6 +39,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
     @BindView(R.id.login_coordinator_container) CoordinatorLayout mCoordinatorLayout;
 
     private DataManager mDataManager;
+    private RepositoryDao mRepositoryDao;
+    private UserDao mUserDao;
 
     /**
      * Создание Activity
@@ -61,8 +59,16 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         mLoginRemember.setOnClickListener(this);
 
         mDataManager = DataManager.getInstance();
+        mRepositoryDao = mDataManager.getDaoSession().getRepositoryDao();
+        mUserDao = mDataManager.getDaoSession().getUserDao();
 
-        checkToken();
+        mDataManager.getBus().register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mDataManager.getBus().unregister(this);
     }
 
     /**
@@ -93,17 +99,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
     }
 
     /**
-     * Показ сообщения в нижней части
-     * @param message - текст сообщения
-     */
-    private void showSnackBar(String message) {
-        Log.d(TAG, "showSnackBar");
-
-        Snackbar.make(mCoordinatorLayout, message, Snackbar.LENGTH_LONG).show();
-    }
-
-    /**
-     * переход на сайт при нажатии на кнопку "Забили пароль"
+     * переход на сайт при нажатии на кнопку "Забыли пароль"
      */
     private void rememberPassword() {
         Intent rememberIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(AppConfig.DOMEN_URL + "/forgotpass"));
@@ -111,25 +107,25 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
     }
 
     private void startNewActivity() {
-        //Intent mainIntent = new Intent(this, MainActivity.class);
-        //startActivity(mainIntent);
-        Intent listIntent = new Intent(this, UserListActivity.class);
-        startActivity(listIntent);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent listIntent = new Intent(LoginActivity.this, UserListActivity.class);
+                startActivity(listIntent);
 
-        finish();
+                finish();
+            }
+        }, AppConfig.START_DELAY);
     }
 
     /**
      * При успешной регистрации на сайте
-     *
-     * @param userModel - модель данных
      */
-    private void loginSucces(UserModelRes userModel) {
-        showSnackBar("Вход : " + userModel.getData().getToken());
-        // Сохраняем полученные данные пользователя в Preferenses
-        UserModelManager.saveUserModelToPreferenses(mDataManager, userModel);
-
-        startNewActivity();
+    private void loginSucces() {
+        // Сохраняем данные в БД
+        showSnackBar(mCoordinatorLayout, ConstantManager.MESS_LOAD_USERS);
+        UserDataHelper.SaveUserInDb();
     }
 
     /**
@@ -138,52 +134,40 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
     private void signIn(){
 
         if (NetworkStatusChecker.isNetworkAvailable(this)) {
-            Call<UserModelRes> call = mDataManager.loginUser(new UserLoginReq(mLogin.getText().toString(), mPassword.getText().toString()));
-            call.enqueue(new Callback<UserModelRes>() {
-                @Override
-                public void onResponse(Call<UserModelRes> call, Response<UserModelRes> response) {
-                    if (response.code() == 200) {
-                        loginSucces(response.body());
-                    } else if (response.code() == 404) {
-                        showSnackBar("Неправильный логин или пароль");
-                    } else {
-                        showSnackBar("Ошибка подключения");
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<UserModelRes> call, Throwable t) {
-                    showSnackBar("Нет ответа сервера");
-                }
-            });
+            showSnackBar(mCoordinatorLayout, ConstantManager.MESSAGE_AUTH);
+            UserDataHelper.Authentify(mLogin.getText().toString(), mPassword.getText().toString());
         } else {
-            showSnackBar("Сеть не доступна, попробуйте позже");
+            showSnackBar(mCoordinatorLayout, ConstantManager.ERROR_NETWORK);
         }
     }
 
-    private void checkToken(){
-        if (NetworkStatusChecker.isNetworkAvailable(this)) {
-            Call<UserLoginRes> call = mDataManager.checkToken();
-            call.enqueue(new Callback<UserLoginRes>() {
-                @Override
-                public void onResponse(Call<UserLoginRes> call, Response<UserLoginRes> response) {
-                    if (response.code() == 200) {
-                        UserModelManager.saveOnlyUserDataToPreferenses(mDataManager, response.body().getData());
-                        startNewActivity();
-                    } else if (response.code() == 404) {
-                        showSnackBar("Неправильный логин или пароль");
-                    } else {
-                        showSnackBar("Ошибка подключения");
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<UserLoginRes> call, Throwable t) {
-                    showSnackBar("Нет ответа сервера");
-                }
-            });
+    /**
+     * Подписываемся на событие аутентификации на сервере
+     *
+     * @param eventBus
+     */
+    @Subscribe
+    public void onAuthentify(EventBus.EventAuth eventBus) {
+        String event = eventBus.getMessage();
+        if (event == "") {
+            loginSucces();
         } else {
-            showSnackBar("Сеть не доступна, попробуйте позже");
+            showSnackBar(mCoordinatorLayout, event);
+        }
+    }
+
+    /**
+     * Подписываемся на событие сохранения данных в БД
+     *
+     * @param eventBus - рузультат
+     */
+    @Subscribe
+    public void onSaveInDb(EventBus.EventSaveInDbBus eventBus) {
+        String event = eventBus.getMessage();
+        if (event == "") {
+            startNewActivity();
+        } else {
+            showSnackBar(mCoordinatorLayout, event);
         }
     }
 }

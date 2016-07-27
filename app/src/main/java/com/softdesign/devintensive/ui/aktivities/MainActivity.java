@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
@@ -46,8 +47,8 @@ import com.softdesign.devintensive.utils.EditTextValidator;
 import com.softdesign.devintensive.utils.NetworkStatusChecker;
 import com.softdesign.devintensive.utils.TransformAndCropImage;
 import com.softdesign.devintensive.utils.TransformRoundedImage;
-import com.softdesign.devintensive.utils.ViewBehavior;
 import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -64,7 +65,7 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 /**
- * Главное окно
+ * Главное окно с редактированием профиля пользователя
  */
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
@@ -83,8 +84,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @BindView(R.id.collapsing_toolbar) CollapsingToolbarLayout mCollapsingToolbar;
     @BindView(R.id.appbar_layout) AppBarLayout mAppBarLayout;
     @BindView(R.id.rating_bar) LinearLayout mRatingBar;
-
     @BindView(R.id.navigation_drawer) DrawerLayout mNavigationDrawer;
+
     @BindView(R.id.fab) FloatingActionButton mFab;
     @BindView(R.id.profile_placeholder) RelativeLayout mProfilePlaceholder;
     @BindView(R.id.user_photo_img) ImageView mUserImage;
@@ -95,27 +96,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     @BindViews({R.id.rating_value, R.id.rating_code_line, R.id.rating_project}) List<TextView> mUserRatings;
 
-    private ImageView mAvatar;
     private AppBarLayout.LayoutParams mAppBarParams = null;
 
-    List<EditTextValidator> mUserInfoValidator;
+    private List<EditTextValidator> mUserInfoValidator;
 
-    File mPhotoFile = null;
-    Uri mSelectedImage = null;
+    private ImageView mAvatar;
+    private File mPhotoFile = null;
+    private Uri mSelectedImage = null;
 
-    /**
-     * назатие на кнопку Back
-     */
-    @Override
-    public void onBackPressed() {
-        Log.d(TAG, "onBackPressed");
-
-        if(mNavigationDrawer.isDrawerOpen(GravityCompat.START)) {
-            mNavigationDrawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
+    protected Drawable mDummy;
 
     /**
      * Создание Activity
@@ -131,6 +120,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         ButterKnife.bind(this);
 
         mDataManager = DataManager.getInstance();
+        mDataManager.getPreferencesManager().saveLastActivity("MainActivity");
 
         mFab.setOnClickListener(this);
         mProfilePlaceholder.setOnClickListener(this);
@@ -140,6 +130,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mUserInfoImgs.get(ConstantManager.USER_VK_ID).setOnClickListener(this);
         mUserInfoImgs.get(ConstantManager.USER_GIT_ID).setOnClickListener(this);
 
+        mDummy = mUserImage.getContext().getResources().getDrawable(R.drawable.user_bg);
+
         setupToolBar();
         setupDrawer();
 
@@ -148,44 +140,50 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         // Инициализируем полей профиля пользователя
         initUserFields();
 
-        // Инициализация аватарки через Picacco
-        if (mAvatar != null)
-            Picasso.with(this)
-                    .load(mDataManager.getPreferencesManager().loadUserAvatar())
-                    .transform(new TransformRoundedImage())
-                    .placeholder(R.drawable.avatar_empty)
-                    .into(mAvatar);
-
         // Иницализация фото пользователя
         initUserPhotoWhithProgress();
 
         List<String> userData = mDataManager.getPreferencesManager().loadUserProfileData();
-        mUserInfoValidator = new ArrayList<EditTextValidator>(4);
+        mUserInfoValidator = new ArrayList<>(4);
 
-        // Делаем пересчет начального паддинга в пиксели
-        float iPad = (float) getResources().getDimensionPixelSize(R.dimen.spacing_half_large_28);
-        // Создаем Behavior, чтобы регулировать отсутпы сверху у серой плашки рейтинга
-        ViewBehavior vBehavior = new ViewBehavior(mRatingBar, iPad);
-        // Делаем привязку на событие изменения круглой кнопки
-        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) mFab.getLayoutParams();
-        params.setBehavior(vBehavior);
-
-        if (savedInstanceState == null) {
-
-        } else {
+        if (savedInstanceState != null) {
             mCurrentEditMode = savedInstanceState.getInt(ConstantManager.EDIT_MODE_KEY, 0);
             changeEditMode(mCurrentEditMode);
         }
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Log.d(TAG, "onOptionsItemSelected");
+        if (mAvatar != null)
+            DataManager.getInstance().getPicasso()
+                    .load(mDataManager.getPreferencesManager().loadUserAvatar())
+                    .transform(new TransformRoundedImage())
+                    .networkPolicy(NetworkPolicy.OFFLINE)
+                    .placeholder(R.drawable.avatar_empty)
+                    .into(mAvatar, new Callback() {
 
-        if (item.getItemId() == android.R.id.home) {
-            mNavigationDrawer.openDrawer(GravityCompat.START);
-        }
-        return super.onOptionsItemSelected(item);
+                        @Override
+                        public void onSuccess() {
+                            Log.d(TAG, "Load avatar from cache");
+                        }
+
+                        @Override
+                        public void onError() {
+                            DataManager.getInstance().getPicasso()
+                                    .load(mDataManager.getPreferencesManager().loadUserAvatar())
+                                    .transform(new TransformRoundedImage())
+                                    .placeholder(R.drawable.avatar_empty)
+                                    .into(mAvatar, new Callback() {
+
+                                        @Override
+                                        public void onSuccess() {
+                                            Log.d(TAG, "Load avatar from network");
+                                        }
+
+                                        @Override
+                                        public void onError() {
+                                            Log.d(TAG, "Error load avatar from network");
+                                        }
+                                    });
+                        }
+                    });
     }
 
     @Override
@@ -226,6 +224,28 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         Log.d(TAG, "onSaveInstanceState");
 
         outState.putInt(ConstantManager.EDIT_MODE_KEY, mCurrentEditMode);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            mNavigationDrawer.openDrawer(GravityCompat.START);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * назатие на кнопку Back
+     */
+    @Override
+    public void onBackPressed() {
+        Log.d(TAG, "onBackPressed");
+
+        if(mNavigationDrawer.isDrawerOpen(GravityCompat.START)) {
+            mNavigationDrawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     /**
@@ -326,77 +346,39 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     /**
-     * Настройка боковой панели
-     */
-    private void setupDrawer() {
-        Log.d(TAG, "setupDrawer");
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
-        if (navigationView != null) {
-            navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-                @Override
-                public boolean onNavigationItemSelected(MenuItem item) {
-                    showSnackBar(item.getTitle().toString());
-                    item.setChecked(true);
-                    mNavigationDrawer.closeDrawer(GravityCompat.START);
-                    return false;
-                }
-            });
-            mAvatar = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.user_avatar);
-        }
-    }
-
-    /**
-     * Показ сообщения в нижней части
-     * @param message - текст сообщения
-     */
-    private void showSnackBar(String message) {
-        Log.d(TAG, "showSnackBar");
-
-        Snackbar.make(mCoordinatorLayout, message, Snackbar.LENGTH_LONG).show();
-    }
-
-    /**
-     * Показ прогресса
-     */
-    private void runWithDalay() {
-        Log.d(TAG, "runWithDalay");
-
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                // TODO: выполнить с задержкой
-                hideProgress();
-            }
-        }, 3000);
-    }
-
-    /**
-     * Результат загрузки фото во вью
-     */
-    Callback callBack = new Callback(){
-        @Override
-        public void onSuccess(){
-            Log.d(TAG, "end loading user photo - " + new Date().toString());
-            hideProgress();
-        }
-        @Override
-        public void onError(){
-            Log.d(TAG, "error loading user photo - " + new Date().toString());
-            hideProgress();
-        }
-    };
-
-    /**
      * Загрузк фото профиля пользователя через Picasso
      */
     private void setUserPhotoIntoView() {
-        Log.d(TAG, "start loading user photo - " + new Date().toString());
-
-        Picasso.with(this)
+        mDataManager.getPicasso()
                 .load(mDataManager.getPreferencesManager().loadUserPhoto())
-                .into(mUserImage, callBack);
+                .placeholder(mDummy)
+                .error(mDummy)
+                .networkPolicy(NetworkPolicy.OFFLINE)
+                .into(mUserImage, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        hideProgress();
+                    }
+
+                    @Override
+                    public void onError() {
+                        mDataManager.getPicasso()
+                                .load(mDataManager.getPreferencesManager().loadUserPhoto())
+                                .placeholder(mDummy)
+                                .error(mDummy)
+                                .into(mUserImage, new Callback() {
+                                    @Override
+                                    public void onSuccess() {
+                                        hideProgress();
+                                    }
+
+                                    @Override
+                                    public void onError() {
+                                        showSnackBar(mCoordinatorLayout, ConstantManager.ERROR_LOAD);
+                                    }
+                                });
+                    }
+                });
     }
 
     /**
@@ -432,6 +414,35 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     /**
+     * Настройка боково панели
+     */
+    private void setupDrawer() {
+        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        if (navigationView != null) {
+            navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(MenuItem item) {
+                    mNavigationDrawer.closeDrawer(GravityCompat.START);
+                    showSnackBar(mCoordinatorLayout, item.getTitle().toString());
+                    item.setChecked(true);
+                    switch (item.getItemId()) {
+                        case R.id.user_profile_menu:
+                            break;
+                        case R.id.team_menu:
+                            Intent listIntent = new Intent(MainActivity.this, UserListActivity.class);
+                            startActivity(listIntent);
+                            finish();
+                            break;
+                    }
+                    return false;
+                }
+            });
+            mAvatar = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.user_avatar);
+        }
+    }
+
+
+    /**
      * Установка валидатора для элементов EditText
      */
     private void setUserInfoValidator() {
@@ -451,8 +462,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
      * Отключение валидатора от элементов EditText
      */
     private void removeUserInfoValidator() {
-        for (int i = 0; i < mUserInfoLayouts.size(); i++) {
-            mUserInfoViews.get(i).removeTextChangedListener(mUserInfoValidator.get(i));
+        if (mUserInfoValidator.size() > 0) {
+            for (int i = 0; i < mUserInfoLayouts.size(); i++) {
+                if (mUserInfoValidator.size() > i) {
+                    mUserInfoViews.get(i).removeTextChangedListener(mUserInfoValidator.get(i));
+                }
+            }
         }
     }
 
@@ -473,8 +488,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             }
 
             showProfilePlaceholder();
-            // Прячем на время редактирования "серую плашку" освобождая место
-            mRatingBar.setVisibility(View.GONE);
             // Блокируем турбар
             lockToolbar();
             mCollapsingToolbar.setExpandedTitleColor(Color.TRANSPARENT);
@@ -498,8 +511,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             // Убираем валидаторы
             removeUserInfoValidator();
 
-            // Возвращаем "серую плашку"
-            mRatingBar.setVisibility(View.VISIBLE);
             // Разблокируем тулбар
             unlockToolbar();
             mCollapsingToolbar.setExpandedTitleColor(getResources().getColor(R.color.white));
@@ -604,7 +615,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(fileName, ".jpg", storageDir);
 
-        Сделал при первом создании активити определение дирректории с проверкой
+        Сделал при первом обращении определение дирректории с проверкой
         Файл создается в нее, опять же если подключено внешнее хранилище
         */
 
@@ -727,7 +738,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     /**
      * Диалог выбора получения фото
      *
-     * @param - код запроса
+     * @id - код запроса
      * @return - созданный диалог
      */
     @Override
@@ -748,15 +759,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                         switch (choiseItem) {
                             case 0:
                                 loadPhotoFromGallery();
-                                showSnackBar("загрузить из галлереи");
+                                showSnackBar(mCoordinatorLayout, "загрузить из галлереи");
                                 break;
                             case 1:
                                 loadPhotoFromCamera();
-                                showSnackBar("сделать снимок");
+                                showSnackBar(mCoordinatorLayout, "сделать снимок");
                                 break;
                             default:
                                 dialog.cancel();
-                                showSnackBar("отмена");
+                                showSnackBar(mCoordinatorLayout, "отмена");
                         }
                     }
                 });
@@ -837,20 +848,20 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 @Override
                 public void onResponse(Call<UserEditPhotoRes> call, Response<UserEditPhotoRes> response) {
                     if (response.code() == 200) {
-                        showSnackBar("Успешная загрузка файла");
+                        showSnackBar(mCoordinatorLayout, ConstantManager.MESS_SUCCESS);
                         mDataManager.getPreferencesManager().saveUserPhotoUpdated(response.body().getData().getLastUpdated());
                     } else {
-                        showSnackBar("Ошибка загрузки : " + Integer.toString(response.code()));
+                        showSnackBar(mCoordinatorLayout, ConstantManager.ERROR_LOAD + Integer.toString(response.code()));
                     }
                 }
 
                 @Override
                 public void onFailure(Call<UserEditPhotoRes> call, Throwable t) {
-                    showSnackBar("Нет ответа сервера");
+                    showSnackBar(mCoordinatorLayout, ConstantManager.ERROR_ANSWER);
                 }
             });
         } else {
-            showSnackBar("Сеть не доступна, попробуйте позже");
+            showSnackBar(mCoordinatorLayout, ConstantManager.ERROR_NETWORK);
         }
     }
 

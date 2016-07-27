@@ -5,8 +5,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@android:color/transparent"
-    android:layout_marginTop="@dimen/size_huge_112"
-    android:layout_gravity="center_horizontal">
+    android:layout_gravity="center">
 
     <ProgressBar
         android:id="@+id/progress"

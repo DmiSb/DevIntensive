@@ -32,6 +32,8 @@
     <dimen name="font_normal_12">12sp</dimen>
     <dimen name="font_normal_14">14sp</dimen>
     <dimen name="font_size_normal_16">16dp</dimen>
+    <dimen name="font_edit_text_19">19sp</dimen>
     <dimen name="font_larger_24">24sp</dimen>
+    <dimen name="font_huge_48">48sp</dimen>
 
 </resources>

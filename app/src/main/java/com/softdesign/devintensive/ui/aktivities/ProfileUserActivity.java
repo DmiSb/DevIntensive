@@ -1,6 +1,7 @@
 package com.softdesign.devintensive.ui.aktivities;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -9,6 +10,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -17,9 +19,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.softdesign.devintensive.R;
+import com.softdesign.devintensive.data.managers.DataManager;
 import com.softdesign.devintensive.data.storage.models.UserDTO;
 import com.softdesign.devintensive.ui.adapters.RepositoriesAdapter;
 import com.softdesign.devintensive.utils.ConstantManager;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -27,7 +32,13 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * Класс просмотра данных пользователя
+ */
+
 public class ProfileUserActivity extends AppCompatActivity {
+
+    private static final String TAG = ConstantManager.TAG_PREFIX + "ProfileUser";
 
     @BindView(R.id.toolbar) Toolbar mToolbar;
     @BindView(R.id.collapsing_toolbar)  CollapsingToolbarLayout mCollapsingToolbar;
@@ -40,12 +51,16 @@ public class ProfileUserActivity extends AppCompatActivity {
     @BindView(R.id.rating_code_line) TextView mUseeCodeLines;
     @BindView(R.id.rating_project) TextView mUserProjects;
 
+    protected Drawable mDummy;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_user);
 
         ButterKnife.bind(this);
+
+        mDummy = mUserPhoto.getContext().getResources().getDrawable(R.drawable.user_bg);
 
         setupToolBar();
         initProfileData();
@@ -60,7 +75,7 @@ public class ProfileUserActivity extends AppCompatActivity {
     }
 
     private void initProfileData() {
-        UserDTO userDTO = getIntent().getParcelableExtra(ConstantManager.PARCELABLE_KEY);
+        final UserDTO userDTO = getIntent().getParcelableExtra(ConstantManager.PARCELABLE_KEY);
         final List<String> repoList = userDTO.getRepositories();
         RepositoriesAdapter repositoriesAdapter = new RepositoriesAdapter(this, repoList);
         mRepoListView.setAdapter(repositoriesAdapter);
@@ -82,10 +97,39 @@ public class ProfileUserActivity extends AppCompatActivity {
 
         mCollapsingToolbar.setTitle(userDTO.getFullName());
 
-        Picasso.with(this)
+        DataManager.getInstance().getPicasso()
                 .load(userDTO.getPhoto())
-                .placeholder(R.drawable.user_bg)
-                .error(R.drawable.user_bg)
-                .into(mUserPhoto);
+                .fit()
+                .centerCrop()
+                .networkPolicy(NetworkPolicy.OFFLINE)
+                .placeholder(mDummy)
+                .error(mDummy)
+                .into(mUserPhoto, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        Log.d(TAG, "Load photo from cache");
+                    }
+
+                    @Override
+                    public void onError() {
+                        DataManager.getInstance().getPicasso()
+                                .load(userDTO.getPhoto())
+                                .fit()
+                                .centerCrop()
+                                .placeholder(mDummy)
+                                .error(mDummy)
+                                .into(mUserPhoto, new Callback() {
+                                    @Override
+                                    public void onSuccess() {
+                                        Log.d(TAG, "Load photo from network");
+                                    }
+
+                                    @Override
+                                    public void onError() {
+                                        Log.d(TAG, "Could not fetch photo from user");
+                                    }
+                                });
+                    }
+                });
     }
 }

@@ -78,7 +78,7 @@
                             style="@style/login_bar_edit"
                             android:hint="@string/email_hint"
                             android:inputType="textEmailAddress"
-                            android:text="@string/email_value"/>
+                            android:text=""/>
 
                     </android.support.design.widget.TextInputLayout>
 
@@ -90,7 +90,7 @@
                             style="@style/login_bar_edit"
                             android:hint="@string/login_password"
                             android:inputType="textPassword"
-                            android:text="SdbTxcAAdp"/>
+                            android:text=""/>
 
                     </android.support.design.widget.TextInputLayout>
 

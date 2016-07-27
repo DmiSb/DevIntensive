@@ -12,7 +12,7 @@ import com.softdesign.devintensive.R;
 import java.util.List;
 
 /**
- * Created by Дима on 14.07.2016.
+ * Адаптер для списка репозиториев
  */
 public class RepositoriesAdapter extends BaseAdapter {
 
@@ -49,7 +49,7 @@ public class RepositoriesAdapter extends BaseAdapter {
             itemView = mInflater.inflate(R.layout.item_repositories_list, parent, false);
         }
 
-        TextView repoName = (TextView) itemView.findViewById(R.id.git_et);
+        TextView repoName = (TextView) itemView.findViewById(R.id.git_te);
         repoName.setText(mRepoList.get(position));
 
         return itemView;

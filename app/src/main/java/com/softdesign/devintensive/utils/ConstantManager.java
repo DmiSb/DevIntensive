@@ -16,7 +16,6 @@ public interface ConstantManager {
     String USER_AVATAR_KEY          = "USER_AVATAR_KEY";
     String USER_PHOTO_UPDATE_KEY    = "USER_PHOTO_UPDATE_KEY";
 
-
     String AUTH_TOKEN_KEY           = "AUTH_TOKEN_KEY";
     String USER_ID_KEY              = "USER_ID_KEY";
 
@@ -25,6 +24,8 @@ public interface ConstantManager {
     String USER_CODE_LINE_KEY       = "USER_CODE_LINE_KEY";
 
     String PARCELABLE_KEY           = "PARCELABLE_KEY";
+    String LAST_ACTIVITY_KEY        = "LAST_ACTIVITY_KEY";
+    String REMOTE_IDS_KEY           = "REMOTE_IDS_KEY";
 
     int USER_PHONE_ID               = 0;
     int USER_EMAIL_ID               = 1;
@@ -44,4 +45,19 @@ public interface ConstantManager {
     String VK_SYMBOL                = "vk.com";
     String GIT_SYMBOL               = "github.com";
 
+    String NEED_AUTH                = "NEED_AUTH";
+
+    String ERROR_AUTH               = "Неправильный логин или пароль ";
+    String ERROR_CONNECT            = "Ошибка подключения к серверу ";
+    String ERROR_ANSWER             = "Нет ответа сервера ";
+    String ERROR_USER_LIST          = "Список пользвателей не может быть получен ";
+    String ERROR_RESIVE             = "Ошибка получения данных с сервера ";
+    String ERROR_NETWORK            = "Сеть не доступна, попробуйте позже ";
+    String ERROR_LOAD               = "Ошибка загрузки ";
+
+    String MESSAGE_AUTH             = "Аутентификация...";
+    String MESS_LOAD_USERS          = "Чтение списка пользователей...";
+    String MESS_SUCCESS             = "Успешная загрузка";
+
+    int PENDING_REMOVAL_TIMEOUT     = 3000;
 }
