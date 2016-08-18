@@ -34,5 +34,8 @@ http://skill-branch.ru/
 5.  Chronos - выполнения асинхронных операций
     https://github.com/RedMadRobot/Chronos
 6.  GreenDAO - работа с базой данных
-    http://greenrobot.org/greendao  
+    http://greenrobot.org/greendao
+    
+    В ходе изучения определены дополнитлеьные возможности при работе с GreenDAO
+        https://github.com/DmiSb/GreenDAO-Helper
 ````
