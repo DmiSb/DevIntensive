@@ -36,6 +36,6 @@ http://skill-branch.ru/
 6.  GreenDAO - работа с базой данных
     http://greenrobot.org/greendao
     
-    В ходе изучения определены дополнитлеьные возможности при работе с GreenDAO
+    В ходе изучения нашел и зафиксировал дополнительные возможности при работе с GreenDAO, не описанные в официальной документации:
         https://github.com/DmiSb/GreenDAO-Helper
 ````
