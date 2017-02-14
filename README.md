@@ -37,5 +37,5 @@ http://skill-branch.ru/
     http://greenrobot.org/greendao
     
     В ходе изучения нашел и зафиксировал дополнительные возможности при работе с GreenDAO, не описанные в официальной документации:
-        https://github.com/DmiSb/GreenDAO-Helper
+        https://github.com/DmiSb/DevIntensive/wiki/GreenDAO-Helper
 ````
