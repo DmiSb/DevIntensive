@@ -35,6 +35,7 @@ http://skill-branch.ru/
     https://github.com/RedMadRobot/Chronos
 6.  GreenDAO - работа с базой данных
     http://greenrobot.org/greendao
-    В ходе изучения нашел и зафиксировал дополнительные возможности при работе с GreenDAO, не описанные в официальной документации:
-        https://github.com/DmiSb/DevIntensive/wiki/GreenDAO-Helper
+    В ходе изучения нашел и зафиксировал дополнительные возможности при работе с GreenDAO, 
+    не описанные в официальной документации:
+    https://github.com/DmiSb/DevIntensive/wiki/GreenDAO-Helper
 ````
