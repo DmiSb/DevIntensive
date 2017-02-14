@@ -24,30 +24,17 @@ http://skill-branch.ru/
 В рамках программы рассмотрены и используются в проекте следующие библиотеки:
 ````
 1.  Picasso - асинхронная загрузка изображений из сети, файловой системы или ресурсов, кэширование и отображение.
-````
     https://github.com/square/picasso
-````    
 2.  ButterKnife - биндинг ресурсов.
-````
     https://github.com/JakeWharton/butterknife
-````    
 3.  Retrofit 2.0 - работа с сетью посредством REST-запросов. 
-````
     https://github.com/square/retrofit
-````    
 4.  EvenBus - взаимодействие между компонентами Android
-````
     http://greenrobot.org/eventbus
-````    
 5.  Chronos - выполнения асинхронных операций
-````
     https://github.com/RedMadRobot/Chronos
-````
 6.  GreenDAO - работа с базой данных
-````
     http://greenrobot.org/greendao
-````    
     В ходе изучения нашел и зафиксировал дополнительные возможности при работе с GreenDAO, не описанные в официальной документации:
-````    
         https://github.com/DmiSb/DevIntensive/wiki/GreenDAO-Helper
-
+````
